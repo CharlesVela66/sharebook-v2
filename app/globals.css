@@ -1,22 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fafaf7;
   --foreground: #171717;
+
+  --primary: #ffc700;
+  --primary-hover: #e0ac00;
+  --primary-tint: #fff4d6;
+
+  --secondary: #1b2a4a;
+  --secondary-hover: #28395e;
+  --secondary-tint: #edf1f7;
+  --secondary-light: #4a5568;
+
+  --cards: #ffffff;
+  --border: #e5e0d5;
+  --border-strong: #d8cfc0;
+  --muted: #8a8578;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-poppins);
+  --font-mono: var(--font-poppins);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-tint: var(--primary-tint);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-tint: var(--secondary-tint);
+  --color-secondary-light: var(--secondary-light);
+
+  --color-cards: var(--cards);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--muted);
 }
 
 body {
