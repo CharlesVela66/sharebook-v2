@@ -1,11 +1,12 @@
 import { Bell } from "lucide-react";
 import SearchInput from "./search/SearchInput";
+import Link from "next/link";
 
 export default function Navbar(){
     return (
         <nav className="w-full bg-secondary flex justify-between py-3 px-8">
             <div className="w-full flex gap-10">
-                <span className="font-bold text-3xl text-primary">sharebook</span>
+                <Link href="/" className="font-bold text-3xl text-primary">sharebook</Link>
                 <SearchInput />
             </div>
             <div className="flex items-center gap-8">

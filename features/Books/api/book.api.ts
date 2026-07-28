@@ -6,8 +6,8 @@ import { OpenLibraryAuthor, OpenLibraryAuthorRef, OpenLibraryEditionsResponse, O
 
 const ENDPOINT = "https://openlibrary.org/search.json";
 
-export async function getBooksSearchResultsApi(): Promise<BookCard[]> {
-    const response = await fetch(`${ENDPOINT}?q=atomic+habits&limit=10&fields=key,title,author_name,first_publish_year,cover_i,language,publisher,isbn,number_of_pages_median,subject`, {
+export async function getBooksSearchResultsApi(query: string): Promise<BookCard[]> {
+    const response = await fetch(`${ENDPOINT}?q=${query}&limit=10&fields=key,title,author_name,first_publish_year,cover_i,language,publisher,isbn,number_of_pages_median,subject`, {
         method: "GET",
         headers: {
             "User-Agent": "ShareBook (carlosed.velasco@gmail.com)"

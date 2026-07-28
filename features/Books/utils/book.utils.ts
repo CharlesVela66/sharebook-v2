@@ -25,12 +25,16 @@ export function prepareApiBookForDb(bookWork: OpenLibraryWork, bookEditions: Ope
         publisher: bookEditions.entries[0].publishers.join(", "),
         isbn: bookEditions.entries[0].isbn_13?.[0] ?? "",
         page_count: null,
-        year: new Date(bookWork.created.value).getFullYear(),
+        year: parseInt(bookEditions.entries[0].publish_date?.match(/\d{4}/)?.[0] ?? "", 10) || 0,
         genre: null,
         image_url: bookWork.covers?.[0] ? `https://covers.openlibrary.org/b/id/${bookWork.covers[0]}-L.jpg` : "",
-        language: bookEditions.entries[0].languages[0].key.split("/").pop() ?? "",
+        language: bookEditions.entries.length > 0
+                    && bookEditions.entries[0].languages
+                    && bookEditions.entries[0].languages.length > 0
+                    ? bookEditions.entries[0].languages[0].key.split("/").pop() ?? ""
+                    : "",
         open_library_work_id: id,
-        open_library_edition_id: "",
+        open_library_edition_id: bookEditions.entries[0].key.split("/").pop() ?? "",
         created_at: new Date(Date.now()),
         updated_at: new Date(Date.now()),
     }
