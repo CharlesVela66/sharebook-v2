@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const books = pgTable("books", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -19,3 +19,17 @@ export const books = pgTable("books", {
 })
 
 export type Book = typeof books.$inferSelect;
+
+export const users = pgTable("users", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    first_name: varchar("first_name").notNull(),
+    last_name: varchar("last_name").notNull(),
+    email: varchar("email").notNull(),
+    profile_picture: varchar("profile_picture").notNull(),
+    birthday: date("birthday"),
+    nationality: varchar("nationality"),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+})
+
+export type User = typeof users.$inferSelect;
