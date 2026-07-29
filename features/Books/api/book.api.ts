@@ -58,7 +58,7 @@ export async function getBookWorkApi(workId: string): Promise<OpenLibraryWork> {
 }
 
 export async function getBookEditionsApi(workId: string): Promise<OpenLibraryEditionsResponse> {
-    const editionResponse = await fetch(`https://openlibrary.org/works/${workId}/editions.json?limit=1`, {
+    const editionResponse = await fetch(`https://openlibrary.org/works/${workId}/editions.json`, {
         method: "GET",
         headers: {
             "User-Agent": "ShareBook (carlosed.velasco@gmail.com)"

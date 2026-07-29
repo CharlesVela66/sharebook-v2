@@ -7,6 +7,7 @@ export interface OpenLibraryWork {
     key: string;
     title: string;
     description?: string;
+    first_publish_date?: string;
     subjects?: string[];
     authors: OpenLibraryAuthorRef[];
     covers?: number[];
@@ -27,6 +28,7 @@ export interface OpenLibraryEdition {
     publish_date?: string;
     isbn_13?: string[];
     isbn_10?: string[];
+    covers?: number[];
     languages: { key: string }[];
     subjects?: string[];
     number_of_pages?: number;
