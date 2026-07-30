@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,9 +14,13 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { signUpSchema } from "../schema/signup.schema"
-
+import { createUser } from "../services/signup.services"
+import { useRouter } from "next/navigation"
 
 export default function SignUpForm() {
+
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -27,8 +31,19 @@ export default function SignUpForm() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof signUpSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+    try {
+      const user = await createUser(data);
+      if (!user.user) {
+        toast.error(user.message);
+        return;
+      }
+      toast.success(user.message);
+      router.push("/login");
+      
+    } catch {
+      toast.error("Something went wrong with creating your account! Try again");
+    }
   }
 
   return (
