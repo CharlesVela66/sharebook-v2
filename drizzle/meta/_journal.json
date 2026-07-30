@@ -15,6 +15,20 @@
       "when": 1785271079616,
       "tag": "0001_numerous_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785430594092,
+      "tag": "0002_deep_power_pack",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785430629476,
+      "tag": "0003_concerned_triton",
+      "breakpoints": true
     }
   ]
 }
