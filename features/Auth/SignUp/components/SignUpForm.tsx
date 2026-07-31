@@ -33,14 +33,14 @@ export default function SignUpForm() {
 
   async function onSubmit(data: z.infer<typeof signUpSchema>) {
     try {
-      const user = await createUser(data);
-      if (!user.user) {
-        toast.error(user.message);
+      const result = await createUser(data);
+      if (!result.success) {
+        toast.error(result.message);
         return;
       }
-      toast.success(user.message);
+      toast.success(result.message);
       router.push("/login");
-      
+
     } catch {
       toast.error("Something went wrong with creating your account! Try again");
     }

@@ -14,9 +14,15 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { loginSchema } from "../schema/login.schema"
+import { toast } from "sonner"
+import { authenticate } from "../services/login.services"
+import { useRouter } from "next/navigation"
 
 
 export default function LoginForm() {
+
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -25,8 +31,20 @@ export default function LoginForm() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof loginSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof loginSchema>) {
+      try {
+        const result = await authenticate(data);
+        if (!result.success){
+          toast.error(result.message);
+        }
+        else {
+          toast.success(result.message);
+          router.push('/');
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong. Try again.")
+      }
   }
 
   return (

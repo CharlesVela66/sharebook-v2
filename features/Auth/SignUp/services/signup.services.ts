@@ -6,7 +6,7 @@ import { users } from "@/db/schema";
 import argon2 from "argon2"
 import { db } from "@/db";
 import { isEmailExistent } from "../validations/signup.validations";
-import { createUserResponse } from "../types/signup.types";
+import { authUserResponse } from "../../shared/types/auth.types";
 
 async function hashPassword(plainPassword: string) {
   try {
@@ -19,15 +19,15 @@ async function hashPassword(plainPassword: string) {
   }
 }
 
-export async function createUser(data: z.infer<typeof signUpSchema>) : Promise<createUserResponse>{
+export async function createUser(data: z.infer<typeof signUpSchema>) : Promise<authUserResponse>{
     const emailExists = await isEmailExistent(data.email);
 
-    if (emailExists) return { message: "User with this email already exists" }
+    if (emailExists) return { success: false, message: "User with this email already exists" }
     
     const password = await hashPassword(data.password);
 
     if (!password) {
-        return { message: "There was an error with your password, try again." }
+        return { success: false, message: "There was an error with your password, try again." }
     }
 
     const user = await db.insert(users).values({
@@ -37,6 +37,8 @@ export async function createUser(data: z.infer<typeof signUpSchema>) : Promise<c
         password: password
     }).returning();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _password, ...safeUser } = user[0];
 
-    return { user: user[0], message: "User created! Now you can log in" };
+    return { success: true, user: safeUser, message: "User created! Now you can log in" };
 }
