@@ -43,6 +43,13 @@
       "when": 1785514005294,
       "tag": "0005_curly_gamora",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785515845058,
+      "tag": "0006_blue_lionheart",
+      "breakpoints": true
     }
   ]
 }

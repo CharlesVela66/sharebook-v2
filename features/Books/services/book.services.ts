@@ -1,6 +1,6 @@
 import { db } from "@/db";
-import { Book, books } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { Book, books, bookSubjects, subjects } from "@/db/schema";
+import { eq, inArray } from "drizzle-orm";
 
 export async function getBookByWorkId(workId: string) : Promise<Book | undefined>{
     const dbLookup = await db.select().from(books).where(eq(books.open_library_work_id, workId));
@@ -25,4 +25,26 @@ export async function createBook(data: Omit<Book, "id">) : Promise<Book>{
     }).returning();
 
     return result[0];
+}
+
+export async function createBookSubjects(bookId: string, subjectNames: string[]) : Promise<void>{
+    if (subjectNames.length === 0) return;
+
+    const subs = subjectNames.map((s) => {
+        return { name: s }
+    });
+
+    await db.insert(subjects).values(subs).onConflictDoNothing({ target: subjects.name });
+
+    const subjectIds = await db.select({id: subjects.id}).from(subjects).where(inArray(subjects.name, subjectNames));
+
+    if (!subjectIds || subjectIds.length === 0){
+        return;
+    }
+
+    const bookSubjectsMap = subjectIds.map((s) => {
+        return { book_id: bookId, subject_id: s.id }
+    })
+
+    await db.insert(bookSubjects).values(bookSubjectsMap)
 }

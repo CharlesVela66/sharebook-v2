@@ -1,7 +1,7 @@
 import { Book } from "@/db/schema";
 import { BookCard } from "../types/book.types";
 import { convertRawBookDataToBookCard, prepareApiBookForDb } from "../utils/book.utils";
-import { createBook, getBookByWorkId } from "../services/book.services";
+import { createBook, createBookSubjects, getBookByWorkId } from "../services/book.services";
 import { OpenLibraryAuthor, OpenLibraryAuthorRef, OpenLibraryEditionsResponse, OpenLibraryWork } from "../types/book.api.types";
 
 const ENDPOINT = "https://openlibrary.org/search.json";
@@ -83,7 +83,11 @@ export async function getBookDetailsApi(id: string): Promise<Book> {
 
     const bookObject = prepareApiBookForDb(bookWork, bookEditions, authorNames, id);
 
-    const book = await createBook(bookObject);
+    const book = await createBook(bookObject.object);
+
+    if (bookObject.subjects && bookObject.subjects.length > 0){
+        await createBookSubjects(book.id, bookObject.subjects);
+    }
 
     return book;
 }

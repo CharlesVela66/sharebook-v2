@@ -9,7 +9,7 @@ export const books = pgTable("books", {
     isbn: varchar("isbn", { length: 13 }).notNull(),
     page_count: integer("page_count"),
     year: integer("year").notNull(),
-    genre: uuid("genre").references(() => genres.id, { onDelete: 'set null' }),
+    genre: varchar("genre"),
     image_url: varchar("image_url"),
     language: varchar("language").notNull(),
     open_library_work_id: varchar("open_library_work_id").notNull(),
@@ -35,15 +35,6 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 
-export const genres = pgTable("genres", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    name: varchar("name").notNull(),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow()
-})
-
-export const Genre = typeof genres.$inferSelect;
-
 export const subjects = pgTable("subjects", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name").notNull().unique(),
@@ -51,7 +42,7 @@ export const subjects = pgTable("subjects", {
     updated_at: timestamp("updated_at").defaultNow()
 })
 
-export const Subject = typeof genres.$inferSelect;
+export const Subject = typeof subjects.$inferSelect;
 
 export const bookSubjects = pgTable("book_subjects", {
     id: uuid("id").defaultRandom().primaryKey(),

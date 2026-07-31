@@ -1,6 +1,9 @@
 import { Book } from "@/db/schema";
 import { OpenLibraryEdition, OpenLibraryEditionsResponse, OpenLibraryWork } from "../types/book.api.types";
 import { BookCard, RawBookData } from "../types/book.types";
+import { GENRES } from "@/constants/constants";
+
+const MAX_SUBJECTS_PER_BOOK = 5;
 
 function parsePublishYear(publishDate?: string): number | null {
     const match = publishDate?.match(/\d{4}/);
@@ -39,6 +42,43 @@ function getModeYear(entries: OpenLibraryEdition[]): number | null {
     return modeYear;
 }
 
+function getPageCount(entries: OpenLibraryEdition[]): number | null {
+    for (const edition of entries) {
+        if (edition.number_of_pages) return edition.number_of_pages;
+    }
+    return null;
+}
+
+export function normalizeSubjects(subjects?: string[]): string[] {
+    if (!subjects || subjects.length === 0) return [];
+
+    const seen = new Set<string>();
+    const normalized: string[] = [];
+
+    for (const subject of subjects) {
+        const trimmed = subject.trim();
+        if (!trimmed) continue;
+
+        const key = trimmed.toLowerCase();
+        if (seen.has(key)) continue;
+
+        seen.add(key);
+        normalized.push(trimmed);
+    }
+
+    return normalized;
+}
+
+function getBookGenre(subjects?: string[]) : string | null{
+    if (!subjects || subjects.length === 0) return null;
+    for (const subject of subjects){
+        if (GENRES.find((g : string) => g.toLowerCase() == subject.toLowerCase())){
+            return subject;
+        }
+    }
+    return null;
+}
+
 function determineYear(bookWork: OpenLibraryWork, entries: OpenLibraryEdition[]): number {
     return parsePublishYear(bookWork.first_publish_date) ?? getModeYear(entries) ?? 0;
 }
@@ -62,15 +102,21 @@ export function prepareApiBookForDb(bookWork: OpenLibraryWork, bookEditions: Ope
     const firstEdition = getFirstEdition(bookEditions.entries);
     const coverId = firstEdition.covers?.[0] ?? bookWork.covers?.[0];
 
+    const subjects: string[] | undefined = bookWork.subjects && bookWork.subjects.length > 0
+        ? bookWork.subjects
+        : firstEdition.subjects
+
+    const bookGenre : string | null = getBookGenre(subjects);
+
     const bookObject: Omit<Book, "id"> = {
         title: bookWork.title,
         description: bookWork.description ?? "",
         author: authorNames.join(", "),
         publisher: firstEdition.publishers && firstEdition.publishers.length > 0 ? firstEdition.publishers.join(", ") : "",
         isbn: firstEdition.isbn_13?.[0] ?? "",
-        page_count: null,
+        page_count: getPageCount(bookEditions.entries),
         year: determineYear(bookWork, bookEditions.entries),
-        genre: null,
+        genre: bookGenre,
         image_url: coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : "",
         language: firstEdition.languages && firstEdition.languages.length > 0
                     ? firstEdition.languages[0].key.split("/").pop() ?? ""
@@ -81,5 +127,5 @@ export function prepareApiBookForDb(bookWork: OpenLibraryWork, bookEditions: Ope
         updated_at: new Date(Date.now()),
     }
 
-    return bookObject;
+    return { object: bookObject, subjects: normalizeSubjects(subjects).slice(0, MAX_SUBJECTS_PER_BOOK) };
 }
