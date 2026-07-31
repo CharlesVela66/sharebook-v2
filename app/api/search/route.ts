@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const books = await getBooksSearchResultsApi();
+        const books = await getBooksSearchResultsApi("");
         return NextResponse.json(books, { status: 200 });
     } catch (error) {
         console.error(error);
