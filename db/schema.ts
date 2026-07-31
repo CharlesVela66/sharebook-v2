@@ -9,7 +9,7 @@ export const books = pgTable("books", {
     isbn: varchar("isbn", { length: 13 }).notNull(),
     page_count: integer("page_count"),
     year: integer("year").notNull(),
-    genre: varchar("genre"),
+    genre: uuid("genre").references(() => genres.id, { onDelete: 'set null' }),
     image_url: varchar("image_url"),
     language: varchar("language").notNull(),
     open_library_work_id: varchar("open_library_work_id").notNull(),
@@ -34,3 +34,31 @@ export const users = pgTable("users", {
 })
 
 export type User = typeof users.$inferSelect;
+
+export const genres = pgTable("genres", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+})
+
+export const Genre = typeof genres.$inferSelect;
+
+export const subjects = pgTable("subjects", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name").notNull().unique(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+})
+
+export const Subject = typeof genres.$inferSelect;
+
+export const bookSubjects = pgTable("book_subjects", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    book_id: uuid("book_id").references(() => books.id, { onDelete: 'cascade' }),
+    subject_id: uuid("subject_id").references(() => subjects.id, { onDelete: 'cascade' }),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+})
+
+export const BookSubject = typeof bookSubjects.$inferSelect;
