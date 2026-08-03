@@ -1,4 +1,4 @@
-import { date, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { date, integer, pgEnum, pgTable, text, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const books = pgTable("books", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -53,3 +53,20 @@ export const bookSubjects = pgTable("book_subjects", {
 })
 
 export const BookSubject = typeof bookSubjects.$inferSelect;
+
+export const shelfEnum = pgEnum("shelf_enum", ["Want to read", "Currently reading", "Read"])
+
+export type Shelf = (typeof shelfEnum.enumValues)[number]
+
+export const shelves = pgTable("shelves", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    book_id: uuid("book_id").references(() => books.id, { onDelete: 'cascade' }).notNull(),
+    shelf: shelfEnum().notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    unique("user_book_id").on(t.user_id, t.book_id),
+])
+
+export const Shelves = typeof shelves.$inferSelect;

@@ -1,3 +1,5 @@
+import { Shelf } from "@/db/schema"
+
 export type BookCard = {
     work_id: string;
     title: string;
@@ -16,4 +18,14 @@ export type RawBookData = {
     publisher?: string[],
     title?: string,
     subject?: string[],
+}
+
+export type UpdateBookShelfProps = {
+    shelf: Shelf;
+    bookId: string;
+}
+
+export type UpdateBookShelfResponse = {
+    success: boolean;
+    message: string;
 }
