@@ -70,3 +70,16 @@ export const shelves = pgTable("shelves", {
 ])
 
 export const Shelves = typeof shelves.$inferSelect;
+
+export const ratings = pgTable("ratings", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    book_id: uuid("book_id").references(() => books.id, { onDelete: 'cascade' }).notNull(),
+    rating: integer("rating").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    unique("user_book_rating_id").on(t.user_id, t.book_id),
+])
+
+export const Rating = typeof ratings.$inferSelect;

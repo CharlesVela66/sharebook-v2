@@ -71,6 +71,13 @@
       "when": 1785769730602,
       "tag": "0009_lazy_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1785800852781,
+      "tag": "0010_gifted_storm",
+      "breakpoints": true
     }
   ]
 }
