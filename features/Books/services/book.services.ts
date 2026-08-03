@@ -1,10 +1,11 @@
 "use server"
 
 import { db } from "@/db";
-import { Book, books, bookSubjects, shelves, subjects } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { Book, books, bookSubjects, Shelf, shelves, subjects } from "@/db/schema";
+import { and, eq, inArray } from "drizzle-orm";
 import { UpdateBookShelfProps, UpdateBookShelfResponse } from "../types/book.types";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function getBookByWorkId(workId: string) : Promise<Book | undefined>{
     const dbLookup = await db.select().from(books).where(eq(books.open_library_work_id, workId));
@@ -65,9 +66,32 @@ export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : 
             target: [shelves.user_id, shelves.book_id],
             set: { shelf }
         })
+        
+        revalidatePath(`/book/${bookId}`);
         return { message: "Book shelf updated successfully", success: true }
     } catch (error){
         console.error(error);
         return { message: "Error updating the book shelf.", success: false }
+    }
+}
+
+export async function getUserBookShelf(bookId: string): Promise<Shelf | null>{
+    try {
+        const session = await auth();
+        if (!session || !session.user) return null;
+
+        const book = await getBookByWorkId(bookId);
+
+        if (!book) return null;
+
+        const response = await db.select({shelf: shelves.shelf}).from(shelves).where(and(eq(shelves.user_id, session.user.id), eq(shelves.book_id, book.id)));
+
+        if (!response || response.length === 0) return null;
+        
+        return response[0].shelf;
+
+    } catch (error){
+        console.error(error);
+        return null;
     }
 }

@@ -18,8 +18,17 @@ import RadioItem from "./RadioItem"
 import { BookmarkIcon, BookOpenIcon, CheckIcon } from "lucide-react"
 import { toast } from "sonner"
 import { updateBookShelf } from "../../services/book.services"
+import { useState } from "react"
 
-export default function ShelfDialog({ book }: { book: Book }) {
+interface ShelfDialogProps {
+  book: Book
+  shelf: Shelf | null
+}
+
+export default function ShelfDialog({ book, shelf }: ShelfDialogProps) {
+
+  const [shelfValue, setShelfValue] = useState<Shelf | null>(shelf);
+  const [open, setOpen] = useState<boolean>(false);
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
     e.preventDefault();
@@ -36,6 +45,7 @@ export default function ShelfDialog({ book }: { book: Book }) {
         return;
       }
       toast.success(result.message);
+      setOpen(false);
     } catch (error) {
       console.error(error);
       toast.error("Couldn't save your book shelf. Try again.")
@@ -43,8 +53,8 @@ export default function ShelfDialog({ book }: { book: Book }) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger render={<ShelfButton />} />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={<ShelfButton shelf={shelf}/>} />
       <DialogContent className="sm:max-w-sm bg-background">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -63,7 +73,7 @@ export default function ShelfDialog({ book }: { book: Book }) {
               </div>
             </div>
           </DialogHeader>
-          <RadioGroup className="w-full" name="shelf-radio-group">
+          <RadioGroup className="w-full" name="shelf-radio-group" value={shelfValue} onValueChange={setShelfValue}>
             <RadioItem icon={BookmarkIcon} label="Want to read" value="Want to read" id="r1"/>
             <RadioItem icon={BookOpenIcon} label="Currently reading" value="Currently reading" id="r2"/>
             <RadioItem icon={CheckIcon} label="Read" value="Read" id="r3"/>
