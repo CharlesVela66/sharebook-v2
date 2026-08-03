@@ -1,6 +1,10 @@
+"use server"
+
 import { db } from "@/db";
-import { Book, books, bookSubjects, subjects } from "@/db/schema";
+import { Book, books, bookSubjects, shelves, subjects } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
+import { UpdateBookShelfProps, UpdateBookShelfResponse } from "../types/book.types";
+import { auth } from "@/auth";
 
 export async function getBookByWorkId(workId: string) : Promise<Book | undefined>{
     const dbLookup = await db.select().from(books).where(eq(books.open_library_work_id, workId));
@@ -47,4 +51,23 @@ export async function createBookSubjects(bookId: string, subjectNames: string[])
     })
 
     await db.insert(bookSubjects).values(bookSubjectsMap)
+}
+
+export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookShelfResponse>{
+    try {
+        const session = await auth();
+        if (!session || !session.user) return { message: "User not authenticated", success: false }
+        await db.insert(shelves).values({
+            user_id: session.user.id,
+            book_id: bookId,
+            shelf
+        }).onConflictDoUpdate({
+            target: shelves.id,
+            set: { shelf }
+        })
+        return { message: "Book shelf updated successfully", success: true }
+    } catch (error){
+        console.error(error);
+        return { message: "Error updating the book shelf.", success: false }
+    }
 }
