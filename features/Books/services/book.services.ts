@@ -62,7 +62,7 @@ export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : 
             book_id: bookId,
             shelf
         }).onConflictDoUpdate({
-            target: shelves.id,
+            target: [shelves.user_id, shelves.book_id],
             set: { shelf }
         })
         return { message: "Book shelf updated successfully", success: true }
