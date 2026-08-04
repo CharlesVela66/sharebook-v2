@@ -25,7 +25,12 @@ export type UpdateBookShelfProps = {
     bookId: string;
 }
 
-export type UpdateBookShelfResponse = {
+export type UpdateBookResponse = {
     success: boolean;
     message: string;
+}
+
+export type UpdateBookRatingProps = {
+    rating: number;
+    bookId: string;
 }

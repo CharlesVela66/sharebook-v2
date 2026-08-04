@@ -1,9 +1,9 @@
 "use server"
 
 import { db } from "@/db";
-import { Book, books, bookSubjects, Shelf, shelves, subjects } from "@/db/schema";
+import { Book, books, bookSubjects, ratings, Shelf, shelves, subjects } from "@/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
-import { UpdateBookShelfProps, UpdateBookShelfResponse } from "../types/book.types";
+import { UpdateBookRatingProps, UpdateBookResponse, UpdateBookShelfProps } from "../types/book.types";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
@@ -54,7 +54,7 @@ export async function createBookSubjects(bookId: string, subjectNames: string[])
     await db.insert(bookSubjects).values(bookSubjectsMap)
 }
 
-export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookShelfResponse>{
+export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookResponse>{
     try {
         const session = await auth();
         if (!session || !session.user) return { message: "User not authenticated", success: false }
@@ -93,5 +93,26 @@ export async function getUserBookShelf(bookId: string): Promise<Shelf | null>{
     } catch (error){
         console.error(error);
         return null;
+    }
+}
+
+export async function updateBookRating({rating, bookId} : UpdateBookRatingProps) : Promise<UpdateBookResponse>{
+    try {
+        const session = await auth();
+        if (!session || !session.user) return { message: "User not authenticated", success: false }
+        await db.insert(ratings).values({
+            user_id: session.user.id,
+            book_id: bookId,
+            rating
+        }).onConflictDoUpdate({
+            target: [ratings.user_id, ratings.book_id],
+            set: { rating }
+        })
+        
+        revalidatePath(`/book/${bookId}`);
+        return { message: "Book rating updated successfully", success: true }
+    } catch (error){
+        console.error(error);
+        return { message: "Error updating the book shelf.", success: false }
     }
 }

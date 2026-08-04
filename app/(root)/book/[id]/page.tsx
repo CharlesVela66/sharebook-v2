@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { getBookDetailsApi } from "@/features/Books/api/book.api";
+import RatingDialog from "@/features/Books/components/rating/RatingDialog";
 import ShelfDialog from "@/features/Books/components/shelf/ShelfDialog";
 import { getUserBookShelf } from "@/features/Books/services/book.services";
-import { Star } from "lucide-react";
 import Image from "next/image";
 
 export default async function BookIdPage({
@@ -51,10 +50,7 @@ export default async function BookIdPage({
                     </div>
                     <div className="flex gap-3">
                         <ShelfDialog book={book} shelf={shelf}/>
-                        <Button variant="outline" className="text-secondary text-md w-fit py-6 px-5 border border-border-strong hover:bg-secondary/10">
-                            <Star />
-                            Rate
-                        </Button>
+                        <RatingDialog book={book}/>
                     </div>
                 </div>
             </div>
