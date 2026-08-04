@@ -19,13 +19,14 @@ import { toast } from "sonner"
 import { updateBookRating } from "../../services/book.services"
 
 interface RatingDialogProps {
-  book: Book
+  book: Book;
+  bookRating: number | null
 }
 
-export default function RatingDialog({ book }: RatingDialogProps) {
+export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
 
   const [open, setOpen] = useState<boolean>(false);
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(bookRating ?? 0);
 
   function handleRating(data: number) {
     setRating(data);

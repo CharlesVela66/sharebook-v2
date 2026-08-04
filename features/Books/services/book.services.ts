@@ -116,3 +116,24 @@ export async function updateBookRating({rating, bookId} : UpdateBookRatingProps)
         return { message: "Error updating the book shelf.", success: false }
     }
 }
+
+export async function getUserBookRating(bookId: string): Promise<number | null>{
+    try {
+        const session = await auth();
+        if (!session || !session.user) return null;
+
+        const book = await getBookByWorkId(bookId);
+
+        if (!book) return null;
+
+        const response = await db.select({rating: ratings.rating}).from(ratings).where(and(eq(ratings.user_id, session.user.id), eq(ratings.book_id, book.id)));
+
+        if (!response || response.length === 0) return null;
+        
+        return response[0].rating;
+
+    } catch (error){
+        console.error(error);
+        return null;
+    }
+}

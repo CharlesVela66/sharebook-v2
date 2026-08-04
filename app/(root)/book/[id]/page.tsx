@@ -1,7 +1,7 @@
 import { getBookDetailsApi } from "@/features/Books/api/book.api";
 import RatingDialog from "@/features/Books/components/rating/RatingDialog";
 import ShelfDialog from "@/features/Books/components/shelf/ShelfDialog";
-import { getUserBookShelf } from "@/features/Books/services/book.services";
+import { getUserBookRating, getUserBookShelf } from "@/features/Books/services/book.services";
 import Image from "next/image";
 
 export default async function BookIdPage({
@@ -9,9 +9,10 @@ export default async function BookIdPage({
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [book, shelf] = await Promise.all([
+    const [book, shelf, rating] = await Promise.all([
         getBookDetailsApi(id),
-        getUserBookShelf(id)
+        getUserBookShelf(id),
+        getUserBookRating(id),
     ]);
 
     const stats = [
@@ -50,7 +51,7 @@ export default async function BookIdPage({
                     </div>
                     <div className="flex gap-3">
                         <ShelfDialog book={book} shelf={shelf}/>
-                        <RatingDialog book={book}/>
+                        <RatingDialog book={book} bookRating={rating}/>
                     </div>
                 </div>
             </div>
