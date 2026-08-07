@@ -57,8 +57,8 @@ export default function ShelfDialog({ book, shelf }: ShelfDialogProps) {
       <DialogTrigger render={<ShelfButton shelf={shelf}/>} />
       <DialogContent className="sm:max-w-sm bg-background">
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle className="text-secondary text-xl font-normal mb-3">Add to shelf</DialogTitle>
+          <DialogHeader className="mb-3">
+            <DialogTitle className="text-secondary text-xl font-normal">Add to shelf</DialogTitle>
             <div className="flex gap-3">
               <Image
                 src={book.image_url || "/placeholder.png"}
