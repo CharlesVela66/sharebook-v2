@@ -1,12 +1,13 @@
 "use server"
 
 import { auth } from "@/auth";
-import { Shelf, shelves } from "@/db/schema";
-import { UpdateBookResponse, UpdateBookShelfProps } from "../../types/book.types";
+import { books, Shelf, shelves } from "@/db/schema";
+import { UpdateBookResponse } from "../../types/book.types";
 import { revalidatePath } from "next/cache";
 import { getBookByWorkId } from "../../services/book.services";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
+import {  ShelfBook, UpdateBookShelfProps } from "../types/book.shelves.types";
 
 export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookResponse>{
     try {
@@ -50,7 +51,26 @@ export async function getUserBookShelf(bookId: string): Promise<Shelf | null>{
     }
 }
 
-export async function geCurrentUserBookShelves(){
-    const session = await auth();
+export async function getUserBookShelves(userId: string) : Promise<ShelfBook[]>{
+    try {
+        const response = await db.select().from(shelves).innerJoin(books, eq(shelves.book_id, books.id)).where(eq(shelves.user_id, userId));
     
+        if (!response) return [];
+
+        const bookResult: ShelfBook[] = response.map((item) => {
+            return {
+                shelfId: item.shelves.id,
+                book: item.books,
+                shelf: item.shelves.shelf,
+                createdAt: item.shelves.created_at,
+                updatedAt: item.shelves.updated_at,
+            }
+        })
+
+        return bookResult;
+
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 }

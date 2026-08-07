@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import ProfileBookFilters from "@/features/Users/components/ProfileBookFilters";
+import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilters";
+import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
 import { getUserById } from "@/features/Users/services/user.services";
 
 export default async function UserPage({
@@ -9,7 +10,10 @@ export default async function UserPage({
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const user = await getUserById(id);
+    const [user, shelves] = await Promise.all([
+       getUserById(id),
+       getUserBookShelves(id)
+    ]) 
 
     if (!user){
         return <div>User not found</div>
@@ -57,7 +61,7 @@ export default async function UserPage({
                     <ProgressValue className="text-primary"/>
                 </Progress>
             </div>
-            <ProfileBookFilters />
+            <ProfileBookShelfFilters bookShelves={shelves ?? []}/>
         </section>
     )
 }
