@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import ProfileBookFilters from "@/features/Users/components/ProfileBookFilters";
 import { getUserById } from "@/features/Users/services/user.services";
 
 export default async function UserPage({
@@ -56,6 +57,7 @@ export default async function UserPage({
                     <ProgressValue className="text-primary"/>
                 </Progress>
             </div>
+            <ProfileBookFilters />
         </section>
     )
 }

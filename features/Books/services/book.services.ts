@@ -1,9 +1,9 @@
 "use server"
 
 import { db } from "@/db";
-import { Book, books, bookSubjects, ratings, Shelf, shelves, subjects } from "@/db/schema";
+import { Book, books, bookSubjects, ratings, subjects } from "@/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
-import { UpdateBookRatingProps, UpdateBookResponse, UpdateBookShelfProps } from "../types/book.types";
+import { UpdateBookRatingProps, UpdateBookResponse } from "../types/book.types";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
@@ -52,48 +52,6 @@ export async function createBookSubjects(bookId: string, subjectNames: string[])
     })
 
     await db.insert(bookSubjects).values(bookSubjectsMap)
-}
-
-export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookResponse>{
-    try {
-        const session = await auth();
-        if (!session || !session.user) return { message: "User not authenticated", success: false }
-        await db.insert(shelves).values({
-            user_id: session.user.id,
-            book_id: bookId,
-            shelf
-        }).onConflictDoUpdate({
-            target: [shelves.user_id, shelves.book_id],
-            set: { shelf }
-        })
-        
-        revalidatePath(`/book/${bookId}`);
-        return { message: "Book shelf updated successfully", success: true }
-    } catch (error){
-        console.error(error);
-        return { message: "Error updating the book shelf.", success: false }
-    }
-}
-
-export async function getUserBookShelf(bookId: string): Promise<Shelf | null>{
-    try {
-        const session = await auth();
-        if (!session || !session.user) return null;
-
-        const book = await getBookByWorkId(bookId);
-
-        if (!book) return null;
-
-        const response = await db.select({shelf: shelves.shelf}).from(shelves).where(and(eq(shelves.user_id, session.user.id), eq(shelves.book_id, book.id)));
-
-        if (!response || response.length === 0) return null;
-        
-        return response[0].shelf;
-
-    } catch (error){
-        console.error(error);
-        return null;
-    }
 }
 
 export async function updateBookRating({rating, bookId} : UpdateBookRatingProps) : Promise<UpdateBookResponse>{

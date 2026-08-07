@@ -10,15 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import ShelfButton from "./ShelfButton"
 import { Book, Shelf } from "@/db/schema"
 import Image from "next/image"
 import { RadioGroup } from "@/components/ui/radio-group"
-import RadioItem from "./RadioItem"
 import { BookmarkIcon, BookOpenIcon, CheckIcon } from "lucide-react"
 import { toast } from "sonner"
-import { updateBookShelf } from "../../services/book.services"
 import { useState } from "react"
+import { updateBookShelf } from "../services/book.shelves.services"
+import ShelfButton from "./ShelfButton"
+import RadioItem from "./RadioItem"
 
 interface ShelfDialogProps {
   book: Book
