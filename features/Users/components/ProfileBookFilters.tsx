@@ -22,7 +22,7 @@ export default function ProfileBookShelfFilters({ bookShelves } : ProfileBookFil
                 <FilterShelfButton label="Currently reading" isSelected={selectedShelf === "Currently reading"} onClick={() => setSelectedShelf("Currently reading")}/>
                 <FilterShelfButton label="Want to read" isSelected={selectedShelf === "Want to read"} onClick={() => setSelectedShelf("Want to read")}/>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
                 {filteredBookShelves.length === 0 ? (
                     <p className="text-sm text-muted">No books in this shelf yet.</p>
                 ) : (
