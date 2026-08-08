@@ -1,9 +1,12 @@
-import { Button } from "@/components/ui/button";
 import { type BookCard } from "../types/book.types";
 import Image from "next/image";
 import Link from "next/link";
+import ShelfDialogTrigger from "../Shelves/components/ShelfDialogTrigger";
+import { getUserBookShelf } from "../Shelves/services/book.shelves.services";
 
-export default function BookCard({book} : {book : BookCard}){
+export default async function BookCard({book} : {book : BookCard}){
+    const shelf = await getUserBookShelf(book.work_id);
+
     return (
         <Link href={`/book/${book.work_id}`} className="w-full flex py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
             <div className="flex gap-10">
@@ -20,9 +23,7 @@ export default function BookCard({book} : {book : BookCard}){
                 </div>
             </div>
             <div className="flex justify-center items-center w-fit">
-                <Button className="bg-primary text-black cursor-pointer">
-                    Want to read
-                </Button>
+                <ShelfDialogTrigger book={book} shelf={shelf}/>
             </div>
         </Link>
     )

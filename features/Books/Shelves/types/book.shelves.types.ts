@@ -12,3 +12,8 @@ export type ShelfBook = {
     createdAt: Date | null;
     updatedAt: Date | null;
 }
+
+export type ResolvedShelfBook = {
+    book: Book;
+    shelf: Shelf | null;
+}

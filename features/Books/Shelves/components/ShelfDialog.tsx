@@ -23,12 +23,14 @@ import RadioItem from "./RadioItem"
 interface ShelfDialogProps {
   book: Book
   shelf: Shelf | null
+  defaultOpen?: boolean
 }
 
-export default function ShelfDialog({ book, shelf }: ShelfDialogProps) {
+export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfDialogProps) {
 
   const [shelfValue, setShelfValue] = useState<Shelf | null>(shelf);
-  const [open, setOpen] = useState<boolean>(false);
+  const [currentShelf, setCurrentShelf] = useState<Shelf | null>(shelf);
+  const [open, setOpen] = useState<boolean>(defaultOpen);
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
     e.preventDefault();
@@ -45,6 +47,7 @@ export default function ShelfDialog({ book, shelf }: ShelfDialogProps) {
         return;
       }
       toast.success(result.message);
+      setCurrentShelf(shelf);
       setOpen(false);
     } catch (error) {
       console.error(error);
@@ -54,7 +57,7 @@ export default function ShelfDialog({ book, shelf }: ShelfDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<ShelfButton shelf={shelf}/>} />
+      <DialogTrigger render={<ShelfButton shelf={currentShelf}/>} />
       <DialogContent className="sm:max-w-sm bg-background">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="mb-3">

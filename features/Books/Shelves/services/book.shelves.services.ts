@@ -5,9 +5,10 @@ import { books, Shelf, shelves } from "@/db/schema";
 import { UpdateBookResponse } from "../../types/book.types";
 import { revalidatePath } from "next/cache";
 import { getBookByWorkId } from "../../services/book.services";
+import { getBookDetailsApi } from "../../api/book.api";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import {  ShelfBook, UpdateBookShelfProps } from "../types/book.shelves.types";
+import {  ResolvedShelfBook, ShelfBook, UpdateBookShelfProps } from "../types/book.shelves.types";
 
 export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookResponse>{
     try {
@@ -49,6 +50,15 @@ export async function getUserBookShelf(bookId: string): Promise<Shelf | null>{
         console.error(error);
         return null;
     }
+}
+
+export async function resolveBookForShelf(workId: string) : Promise<ResolvedShelfBook>{
+    const [book, shelf] = await Promise.all([
+        getBookDetailsApi(workId),
+        getUserBookShelf(workId),
+    ]);
+
+    return { book, shelf };
 }
 
 export async function getUserBookShelves(userId: string) : Promise<ShelfBook[]>{
