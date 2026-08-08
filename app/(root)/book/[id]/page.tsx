@@ -1,6 +1,6 @@
 import { getBookDetailsApi } from "@/features/Books/api/book.api";
-import RatingDialog from "@/features/Books/components/rating/RatingDialog";
-import { getUserBookRating } from "@/features/Books/services/book.services";
+import RatingDialog from "@/features/Books/Ratings/components/RatingDialog";
+import { getUserBookRating } from "@/features/Books/Ratings/services/book.ratings.services";
 import ShelfDialog from "@/features/Books/Shelves/components/ShelfDialog";
 import { getUserBookShelf } from "@/features/Books/Shelves/services/book.shelves.services";
 import Image from "next/image";

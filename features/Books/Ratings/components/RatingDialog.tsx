@@ -16,7 +16,7 @@ import { useState } from "react"
 import RatingButton from "./RatingButton"
 import RatingStar from "./RatingStar"
 import { toast } from "sonner"
-import { updateBookRating } from "../../services/book.services"
+import { updateBookRating } from "../services/book.ratings.services"
 
 interface RatingDialogProps {
   book: Book;

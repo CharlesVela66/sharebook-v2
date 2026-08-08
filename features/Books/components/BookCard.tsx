@@ -14,12 +14,15 @@ export default async function BookCard({book} : {book : BookCard}){
                     src={book.image_url}
                     alt={book.title}
                     width={80}
-                    height={128}
+                    height={160}
                     className="h-32 w-20"
                 />
-                <div className="flex flex-col gap-2">
-                    <h2 className="text-xl text-secondary font-bold">{book.title}</h2>
-                    <p className="text-md text-secondary font-normal">{book.author}</p>
+                <div className="flex flex-col justify-between">
+                    <div className="flex flex-col gap-1">
+                        <h2 className="text-xl text-secondary font-bold">{book.title}</h2>
+                        <p className="text-md text-secondary font-normal">{book.author}</p>
+                    </div>
+                    <p className="text-muted font-medium text-sm">4.5 - 8.9K Ratings</p>
                 </div>
             </div>
             <div className="flex justify-center items-center w-fit">
