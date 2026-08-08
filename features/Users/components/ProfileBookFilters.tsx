@@ -27,7 +27,7 @@ export default function ProfileBookShelfFilters({ bookShelves } : ProfileBookFil
                     <p className="text-sm text-muted">No books in this shelf yet.</p>
                 ) : (
                     filteredBookShelves.map((bookShelf) => (
-                        <Link key={bookShelf.shelfId} href={`/${bookShelf.book.open_library_work_id}`}>
+                        <Link key={bookShelf.shelfId} href={`/book/${bookShelf.book.open_library_work_id}`}>
                             <Image
                                 src={bookShelf.book.image_url || "/placeholder.png"}
                                 alt={bookShelf.book.title}

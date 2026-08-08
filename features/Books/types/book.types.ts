@@ -22,8 +22,3 @@ export type UpdateBookResponse = {
     success: boolean;
     message: string;
 }
-
-export type UpdateBookRatingProps = {
-    rating: number;
-    bookId: string;
-}

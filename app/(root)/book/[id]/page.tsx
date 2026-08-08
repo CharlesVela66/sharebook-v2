@@ -1,6 +1,6 @@
 import { getBookDetailsApi } from "@/features/Books/api/book.api";
 import RatingDialog from "@/features/Books/Ratings/components/RatingDialog";
-import { getUserBookRating } from "@/features/Books/Ratings/services/book.ratings.services";
+import { getBookRatings, getUserBookRating } from "@/features/Books/Ratings/services/book.ratings.services";
 import ShelfDialog from "@/features/Books/Shelves/components/ShelfDialog";
 import { getUserBookShelf } from "@/features/Books/Shelves/services/book.shelves.services";
 import Image from "next/image";
@@ -10,10 +10,11 @@ export default async function BookIdPage({
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [book, shelf, rating] = await Promise.all([
+    const [book, shelf, rating, bookRating] = await Promise.all([
         getBookDetailsApi(id),
         getUserBookShelf(id),
         getUserBookRating(id),
+        getBookRatings(id),
     ]);
 
     const stats = [
@@ -46,8 +47,8 @@ export default async function BookIdPage({
                         <h2 className="text-secondary text-4xl font-bold">{book.title}</h2>
                         <span className="text-secondary text-2xl font-normal">{book.author}</span>
                         <div className="flex gap-10">
-                            <p className="text-secondary font-medium">4.5</p>
-                            <p className="text-muted font-light">89,234 ratings - 6,110 reviews</p>
+                            <p className="text-secondary font-medium">{bookRating && !isNaN(bookRating.average) ? (bookRating.average / 10).toFixed(1) : "No rating"}</p>
+                            <p className="text-muted font-light">{bookRating?.count ?? 0} ratings - 6,110 reviews</p>
                         </div>
                     </div>
                     <div className="flex gap-3">

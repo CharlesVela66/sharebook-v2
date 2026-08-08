@@ -1,12 +1,13 @@
 "use server"
 
 import { auth } from "@/auth";
-import { UpdateBookRatingProps, UpdateBookResponse } from "../../types/book.types";
+import { UpdateBookResponse } from "../../types/book.types";
 import { ratings } from "@/db/schema";
 import { db } from "@/db";
 import { revalidatePath } from "next/cache";
 import { getBookByWorkId } from "../../services/book.services";
 import { and, eq } from "drizzle-orm";
+import { RatingData, RatingUserData, UpdateBookRatingProps } from "../types/book.ratings.types";
 
 export async function updateBookRating({rating, bookId} : UpdateBookRatingProps) : Promise<UpdateBookResponse>{
     try {
@@ -45,6 +46,39 @@ export async function getUserBookRating(bookId: string): Promise<number | null>{
         return response[0].rating;
 
     } catch (error){
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getBookRatings(bookId: string) : Promise<RatingData | null> {
+    try {
+
+        const book = await getBookByWorkId(bookId);
+
+        if (!book) return null;
+
+        const response = await db.select().from(ratings).where(eq(ratings.book_id, book.id));
+
+        if (!response){
+            return null;
+        }
+
+        const allRatings: RatingUserData[] = response.map((r) => {
+            return {
+                userId: r.user_id,
+                rating: r.rating,
+            }
+        })
+
+        const result: RatingData = {
+            count: allRatings.length,
+            average: Math.round((allRatings.reduce((sum, rating) => sum + rating.rating, 0) / allRatings.length) * 10),
+            allRatings
+        }
+
+        return result;
+    } catch(error){
         console.error(error);
         return null;
     }

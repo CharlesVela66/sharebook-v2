@@ -3,9 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import ShelfDialogTrigger from "../Shelves/components/ShelfDialogTrigger";
 import { getUserBookShelf } from "../Shelves/services/book.shelves.services";
+import { getBookRatings } from "../Ratings/services/book.ratings.services";
 
 export default async function BookCard({book} : {book : BookCard}){
-    const shelf = await getUserBookShelf(book.work_id);
+    const [shelf, bookRating] = await Promise.all([
+        getUserBookShelf(book.work_id),
+        getBookRatings(book.work_id),
+    ]);
 
     return (
         <Link href={`/book/${book.work_id}`} className="w-full flex py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
@@ -22,7 +26,9 @@ export default async function BookCard({book} : {book : BookCard}){
                         <h2 className="text-xl text-secondary font-bold">{book.title}</h2>
                         <p className="text-md text-secondary font-normal">{book.author}</p>
                     </div>
-                    <p className="text-muted font-medium text-sm">4.5 - 8.9K Ratings</p>
+                    <p className="text-muted font-medium text-sm">
+                        {bookRating && !isNaN(bookRating.average) ? (bookRating.average / 10).toFixed(1) : "No rating"} - {bookRating?.count ?? 0} Ratings
+                    </p>
                 </div>
             </div>
             <div className="flex justify-center items-center w-fit">
