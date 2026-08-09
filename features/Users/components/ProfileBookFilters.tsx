@@ -18,9 +18,24 @@ export default function ProfileBookShelfFilters({ bookShelves } : ProfileBookFil
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex gap-3">
-                <FilterShelfButton label="Read" isSelected={selectedShelf === "Read"} onClick={() => setSelectedShelf("Read")}/>
-                <FilterShelfButton label="Currently reading" isSelected={selectedShelf === "Currently reading"} onClick={() => setSelectedShelf("Currently reading")}/>
-                <FilterShelfButton label="Want to read" isSelected={selectedShelf === "Want to read"} onClick={() => setSelectedShelf("Want to read")}/>
+                <FilterShelfButton 
+                    label="Read" 
+                    isSelected={selectedShelf === "Read"} 
+                    onClick={() => setSelectedShelf("Read")}
+                    count={bookShelves.filter((b) => b.shelf === "Read").length}
+                />
+                <FilterShelfButton 
+                    label="Currently reading" 
+                    isSelected={selectedShelf === "Currently reading"} 
+                    onClick={() => setSelectedShelf("Currently reading")}
+                    count={bookShelves.filter((b) => b.shelf === "Currently reading").length}
+                />
+                <FilterShelfButton 
+                    label="Want to read" 
+                    isSelected={selectedShelf === "Want to read"} 
+                    onClick={() => setSelectedShelf("Want to read")}
+                    count={bookShelves.filter((b) => b.shelf === "Want to read").length}
+                />
             </div>
             <div className="flex gap-3">
                 {filteredBookShelves.length === 0 ? (
