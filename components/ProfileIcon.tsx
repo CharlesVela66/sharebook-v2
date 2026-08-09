@@ -2,12 +2,13 @@ import { User } from "@/db/schema";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
+import UserAvatar from "@/features/Users/components/UserAvatar";
 
 export default function ProfileIcon({user} : {user: User}){
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button className="rounded-full w-8 h-8 bg-muted cursor-pointer" />}>
-                {user.first_name.charAt(0).toUpperCase()}
+            <DropdownMenuTrigger render={<Button className="rounded-full w-8 h-8 p-0 cursor-pointer" />}>
+                <UserAvatar user={user} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuGroup>

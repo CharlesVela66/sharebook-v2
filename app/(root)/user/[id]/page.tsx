@@ -4,6 +4,7 @@ import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilt
 import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
 import { getUserById } from "@/features/Users/services/user.services";
 import EditProfileDialog from "@/features/Users/components/EditProfileDialog";
+import UserAvatar from "@/features/Users/components/UserAvatar";
 
 export default async function UserPage({
     params
@@ -37,7 +38,7 @@ export default async function UserPage({
         <section className="space-y-4">
             <div className="flex justify-between items-center">
                 <div className="flex flex-row items-center gap-4">
-                    <div className="flex items-center justify-center bg-primary h-18 w-18 rounded-full text-3xl font-medium text-secondary">{user.first_name.charAt(0).toUpperCase()}</div>
+                    <UserAvatar user={user} className="size-18 text-3xl" />
                     <div className="flex flex-col">
                         <p className="text-xl text-secondary font-semibold">{user.first_name} {user.last_name}</p>
                         <p className="text-xs text-muted">Sci-fi and literary fiction · Joined {user.created_at?.getFullYear()}</p>
