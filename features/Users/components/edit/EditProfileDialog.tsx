@@ -42,6 +42,7 @@ export default function EditProfileDialog( { user } : { user: User } ) {
                 return;
             }
             toast.success(result.message);
+            setOpen(false);
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong updating your information. Try again.")
