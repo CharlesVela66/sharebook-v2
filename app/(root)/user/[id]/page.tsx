@@ -22,7 +22,7 @@ export default async function UserPage({
     const data = [
         {
             label: "books read",
-            value: 128
+            value: shelves.filter((b) => b.shelf === "Read").length
         },
         {
             label: "friends",
