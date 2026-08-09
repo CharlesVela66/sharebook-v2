@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilters";
 import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
 import { getUserById } from "@/features/Users/services/user.services";
+import EditProfileDialog from "@/features/Users/components/EditProfileDialog";
 
 export default async function UserPage({
     params
@@ -43,7 +43,7 @@ export default async function UserPage({
                         <p className="text-xs text-muted">Sci-fi and literary fiction · Joined {user.created_at?.getFullYear()}</p>
                     </div>
                 </div>
-                <Button variant="outline">Edit profile</Button>
+                <EditProfileDialog user={user}/>
             </div>
             <Separator />
             <div className="flex gap-6">
