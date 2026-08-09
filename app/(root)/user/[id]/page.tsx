@@ -2,18 +2,20 @@ import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress
 import { Separator } from "@/components/ui/separator";
 import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilters";
 import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
-import { getUserById } from "@/features/Users/services/user.services";
+import { getUserById, getUserReadingGoal } from "@/features/Users/services/user.services";
 import EditProfileDialog from "@/features/Users/components/edit/EditProfileDialog";
 import UserAvatar from "@/features/Users/components/UserAvatar";
+import ReadingGoalDialog from "@/features/Users/components/goal/ReadingGoalDialog";
 
 export default async function UserPage({
     params
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [user, shelves] = await Promise.all([
+    const [user, shelves, goal] = await Promise.all([
        getUserById(id),
-       getUserBookShelves(id)
+       getUserBookShelves(id),
+       getUserReadingGoal(id),
     ]) 
 
     if (!user){
@@ -46,7 +48,7 @@ export default async function UserPage({
                 </div>
                 <div className="flex flex-row gap-3 ">
                     <EditProfileDialog user={user}/>
-
+                    <ReadingGoalDialog goal={goal ?? undefined}/>
                 </div>
             </div>
             <Separator />
