@@ -17,10 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { editProfileSchema } from "../schema/edit.schema";
+import { editProfileSchema } from "../../schema/edit.schema";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { updateUserInformation } from "../services/user.services";
+import { updateUserInformation } from "../../services/user.services";
 
 export default function EditProfileDialog( { user } : { user: User } ) {
     const [open, setOpen] = useState<boolean>(false);

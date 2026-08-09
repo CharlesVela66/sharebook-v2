@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilters";
 import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
 import { getUserById } from "@/features/Users/services/user.services";
-import EditProfileDialog from "@/features/Users/components/EditProfileDialog";
+import EditProfileDialog from "@/features/Users/components/edit/EditProfileDialog";
 import UserAvatar from "@/features/Users/components/UserAvatar";
 
 export default async function UserPage({
@@ -44,7 +44,10 @@ export default async function UserPage({
                         <p className="text-xs text-muted">Sci-fi and literary fiction · Joined {user.created_at?.getFullYear()}</p>
                     </div>
                 </div>
-                <EditProfileDialog user={user}/>
+                <div className="flex flex-row gap-3 ">
+                    <EditProfileDialog user={user}/>
+
+                </div>
             </div>
             <Separator />
             <div className="flex gap-6">
