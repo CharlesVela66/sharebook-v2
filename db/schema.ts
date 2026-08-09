@@ -83,3 +83,16 @@ export const ratings = pgTable("ratings", {
 ])
 
 export const Rating = typeof ratings.$inferSelect;
+
+export const readingGoals = pgTable("reading_goals", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    year: integer("year").notNull(),
+    goal: integer("goal").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    unique("user_year_reading_id").on(t.user_id, t.year),
+])
+
+export const ReadingGoal = typeof readingGoals.$inferSelect;
