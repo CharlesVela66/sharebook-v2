@@ -61,12 +61,16 @@ export default async function UserPage({
                 ))}
             </div>
             <Separator />
-            <div className="flex flex-col bg-secondary w-full py-4 px-6 rounded-xl">
-                <Progress value={37} className="w-full text-background">
-                    <ProgressLabel>2026 reading goal</ProgressLabel>
-                    <ProgressValue className="text-primary"/>
-                </Progress>
-            </div>
+                {goal ? (
+                    <div className="flex flex-col bg-secondary w-full py-4 px-6 rounded-xl">
+                        <Progress value={Math.min((data[0].value / goal) * 100, 100)} className="w-full text-background">
+                            <ProgressLabel>{new Date().getFullYear()} reading goal</ProgressLabel>
+                            <ProgressValue className="text-primary"/>
+                        </Progress>
+                    </div>
+                ) : (
+                    <div className="text-sm text-muted text-center">You haven&apos;t set a reading goal</div>
+                )}
             <ProfileBookShelfFilters bookShelves={shelves ?? []}/>
         </section>
     )
