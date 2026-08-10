@@ -6,6 +6,7 @@ import { getUserById, getUserReadingGoal } from "@/features/Users/services/user.
 import EditProfileDialog from "@/features/Users/components/edit/EditProfileDialog";
 import UserAvatar from "@/features/Users/components/UserAvatar";
 import ReadingGoalDialog from "@/features/Users/components/goal/ReadingGoalDialog";
+import { getProfileStats } from "@/features/Users/utils/user.utils";
 
 export default async function UserPage({
     params
@@ -23,10 +24,6 @@ export default async function UserPage({
     }
     const data = [
         {
-            label: "books read",
-            value: shelves.filter((b) => b.shelf === "Read").length
-        },
-        {
             label: "friends",
             value: 340
         },
@@ -34,7 +31,9 @@ export default async function UserPage({
             label: "reviews",
             value: 58
         },
-    ]
+    ];
+
+    const profileStats = getProfileStats(shelves);
 
     return (
         <section className="space-y-4">
@@ -63,7 +62,7 @@ export default async function UserPage({
             <Separator />
                 {goal ? (
                     <div className="flex flex-col bg-secondary w-full py-4 px-6 rounded-xl">
-                        <Progress value={Math.min((data[0].value / goal) * 100, 100)} className="w-full text-background">
+                        <Progress value={Math.min((profileStats.totalBooksRead / goal) * 100, 100)} className="w-full text-background">
                             <ProgressLabel>{new Date().getFullYear()} reading goal</ProgressLabel>
                             <ProgressValue className="text-primary"/>
                         </Progress>
