@@ -1,6 +1,9 @@
+import { Separator } from "@/components/ui/separator";
 import { getBookDetailsApi } from "@/features/Books/api/book.api";
 import RatingDialog from "@/features/Books/Ratings/components/RatingDialog";
 import { getBookRatings, getUserBookRating } from "@/features/Books/Ratings/services/book.ratings.services";
+import { ReviewSection } from "@/features/Books/Reviews/components/ReviewSection";
+import { getBookReviews } from "@/features/Books/Reviews/services/book.reviews.services";
 import ShelfDialog from "@/features/Books/Shelves/components/ShelfDialog";
 import { getUserBookShelf } from "@/features/Books/Shelves/services/book.shelves.services";
 import Image from "next/image";
@@ -10,11 +13,12 @@ export default async function BookIdPage({
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [book, shelf, rating, bookRating] = await Promise.all([
+    const [book, shelf, rating, bookRating, reviews] = await Promise.all([
         getBookDetailsApi(id),
         getUserBookShelf(id),
         getUserBookRating(id),
         getBookRatings(id),
+        getBookReviews(id),
     ]);
 
     const stats = [
@@ -68,6 +72,11 @@ export default async function BookIdPage({
             <div className="flex flex-col gap-3">
                 <h4 className="text-secondary font-semibold text-2xl">Synopsis</h4>
                 <p className="text-secondary">{book.description || "No description available for this book."}</p>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-3">
+                <h4 className="text-secondary font-semibold text-2xl">Reviews</h4>
+                <ReviewSection bookId={id} reviews={reviews}/>
             </div>
         </section>
     )
