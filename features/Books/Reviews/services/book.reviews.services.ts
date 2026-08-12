@@ -3,7 +3,7 @@
 import { getBookByWorkId } from "../../services/book.services";
 import { reviews, users } from "@/db/schema";
 import { db } from "@/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { UpdateBookResponse } from "../../types/book.types";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
@@ -38,18 +38,23 @@ export async function getBookReviews(bookId: string) : Promise<ReviewCardData[] 
     }
 }
 
-// TODO: look for existing comments for that same book and block the insertion
 export async function createBookReview(bookId: string, review: string) : Promise<UpdateBookResponse>{
     try {
         const session = await auth();
         if (!session || !session.user) return { message: "User not authenticated", success: false };
 
+        const userId = session.user.id;
+
         const book = await getBookByWorkId(bookId);
 
         if (!book) return { success: false, message: "Couldn't find book to insert review. Try again. "};
 
+        const isReview = await userReviewExists(book.id, userId);
+
+        if (isReview) return { success: false, message: "You've already submitted a review for this book." }
+
         await db.insert(reviews).values({
-            user_id: session.user.id,
+            user_id: userId,
             book_id: book.id,
             review
         })
@@ -59,5 +64,16 @@ export async function createBookReview(bookId: string, review: string) : Promise
     } catch (error){
         console.error(error);
         return { success: false, message: `Error writing the review for the book with id: ${bookId}` }
+    }
+}
+
+async function userReviewExists(bookId: string, userId: string): Promise<boolean> {
+    try {
+        const response = await db.select().from(reviews).where(and(eq(reviews.book_id, bookId), eq(reviews.user_id, userId)));
+
+        return response && response.length > 0;
+    } catch(error){
+        console.error(error);
+        return false;
     }
 }
