@@ -96,3 +96,14 @@ export const readingGoals = pgTable("reading_goals", {
 ])
 
 export const ReadingGoal = typeof readingGoals.$inferSelect;
+
+export const reviews = pgTable("reviews", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    book_id: uuid("book_id").references(() => books.id, { onDelete: 'cascade' }).notNull(),
+    review: text("review").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+});
+
+export const Review = typeof reviews.$inferSelect;
