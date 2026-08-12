@@ -104,6 +104,8 @@ export const reviews = pgTable("reviews", {
     review: text("review").notNull(),
     created_at: timestamp("created_at").defaultNow(),
     updated_at: timestamp("updated_at").defaultNow()
-});
+}, (t) => [
+    unique("user_book_review_id").on(t.user_id, t.book_id),
+]);
 
 export const Review = typeof reviews.$inferSelect;
