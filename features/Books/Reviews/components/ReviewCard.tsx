@@ -2,6 +2,8 @@ import UserAvatar from "@/features/Users/components/UserAvatar";
 import { ReviewCardData } from "../types/book.reviews.types";
 import ReviewLike from "./ReviewLike";
 import ReviewActions from "./ReviewActions";
+import { getReviewLikes } from "../services/book.reviews.services";
+import { auth } from "@/auth";
 
 interface ReviewCardProps {
     bookId: string;
@@ -11,7 +13,13 @@ interface ReviewCardProps {
 export async function ReviewCard({ bookId, review } : ReviewCardProps ) {
     const { user } = review;
 
-    //const reviewLikes = await getReviewLikes(review.id);
+    const session = await auth();
+
+    const reviewLikes = await getReviewLikes(review.id);
+
+    const userLike = session?.user
+        ? reviewLikes.find((like) => like.user_id === session.user.id)?.is_like ?? null
+        : null;
 
     const formattedDate = review.updated_at
         ? new Date(review.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
@@ -30,7 +38,7 @@ export async function ReviewCard({ bookId, review } : ReviewCardProps ) {
                 <ReviewActions />
             </div>
             <p className="text-secondary font-normal">{review.review}</p>
-            <ReviewLike bookId={bookId} reviewId={review.id} />
+            <ReviewLike bookId={bookId} reviewId={review.id} reviewLikes={reviewLikes} userLike={userLike}/>
         </div>
     )
 }

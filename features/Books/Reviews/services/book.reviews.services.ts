@@ -1,7 +1,7 @@
 "use server"
 
 import { getBookByWorkId } from "../../services/book.services";
-import { reviewLikes, reviews, users } from "@/db/schema";
+import { ReviewLike, reviewLikes, reviews, users } from "@/db/schema";
 import { db } from "@/db";
 import { and, eq } from "drizzle-orm";
 import { UpdateBookResponse } from "../../types/book.types";
@@ -64,6 +64,16 @@ export async function createBookReview(bookId: string, review: string) : Promise
     } catch (error){
         console.error(error);
         return { success: false, message: `Error writing the review for the book with id: ${bookId}` }
+    }
+}
+
+export async function getReviewLikes(reviewId: string) : Promise<ReviewLike[]> {
+    try {
+        const likes = await db.select().from(reviewLikes).where(eq(reviewLikes.review_id, reviewId));
+        return likes;
+    } catch(error){
+        console.error(error);
+        return [];
     }
 }
 
