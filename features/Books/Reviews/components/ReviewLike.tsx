@@ -22,6 +22,7 @@ export default function ReviewLike({ bookId, reviewId, reviewLikes, userLike } :
     const dislikes = reviewLikes.length - likes;
 
     async function handleSubmit(value: boolean){
+        if (currentLike === value) return;
         try {
             setLoading(true);
             const response = await updateReviewLike(reviewId, bookId, value);
