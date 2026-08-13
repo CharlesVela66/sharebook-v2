@@ -14,7 +14,7 @@ export function ReviewSection({ bookId, reviews } : ReviewSectionProps) {
             {reviews && reviews.length > 0 ? (
                 <div className="flex flex-col gap-3">
                     {reviews.map((review) => (
-                        <ReviewCard key={review.id} review={review} />
+                        <ReviewCard key={review.id} bookId={bookId} review={review} />
                     ))}
                 </div>
             ) : (

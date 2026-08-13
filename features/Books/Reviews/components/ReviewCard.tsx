@@ -1,12 +1,17 @@
-import { Button } from "@/components/ui/button";
 import UserAvatar from "@/features/Users/components/UserAvatar";
-import { PencilIcon, ThumbsDownIcon, ThumbsUpIcon, Trash2Icon } from "lucide-react";
 import { ReviewCardData } from "../types/book.reviews.types";
+import ReviewLike from "./ReviewLike";
+import ReviewActions from "./ReviewActions";
 
-const actionButtonClassName = "hover:bg-transparent dark:hover:bg-transparent";
+interface ReviewCardProps {
+    bookId: string;
+    review: ReviewCardData;
+}
 
-export function ReviewCard({ review } : { review : ReviewCardData }) {
+export async function ReviewCard({ bookId, review } : ReviewCardProps ) {
     const { user } = review;
+
+    //const reviewLikes = await getReviewLikes(review.id);
 
     const formattedDate = review.updated_at
         ? new Date(review.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
@@ -22,24 +27,10 @@ export function ReviewCard({ review } : { review : ReviewCardData }) {
                         {formattedDate && <span className="text-muted text-sm font-normal">{formattedDate}</span>}
                     </div>
                 </div>
-                <div className="flex gap-1">
-                    <Button type="button" variant="ghost" size="icon-sm" className={actionButtonClassName}>
-                        <PencilIcon />
-                    </Button>
-                    <Button type="button" variant="ghost" size="icon-sm" className={actionButtonClassName}>
-                        <Trash2Icon />
-                    </Button>
-                </div>
+                <ReviewActions />
             </div>
             <p className="text-secondary font-normal">{review.review}</p>
-            <div className="flex gap-1">
-                <Button type="button" variant="ghost" size="icon-sm" className={actionButtonClassName}>
-                    <ThumbsUpIcon />
-                </Button>
-                <Button type="button" variant="ghost" size="icon-sm" className={actionButtonClassName}>
-                    <ThumbsDownIcon />
-                </Button>
-            </div>
+            <ReviewLike bookId={bookId} reviewId={review.id} />
         </div>
     )
 }

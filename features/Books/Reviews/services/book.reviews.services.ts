@@ -1,7 +1,7 @@
 "use server"
 
 import { getBookByWorkId } from "../../services/book.services";
-import { reviews, users } from "@/db/schema";
+import { reviewLikes, reviews, users } from "@/db/schema";
 import { db } from "@/db";
 import { and, eq } from "drizzle-orm";
 import { UpdateBookResponse } from "../../types/book.types";
@@ -67,6 +67,29 @@ export async function createBookReview(bookId: string, review: string) : Promise
     }
 }
 
+export async function updateReviewLike(reviewId: string, bookId: string, value: boolean): Promise<UpdateBookResponse> {
+    try {
+        const session = await auth();
+        if (!session || !session.user) return { message: "User not authenticated", success: false };
+
+        await db.insert(reviewLikes).values({
+            user_id: session.user.id,
+            review_id: reviewId,
+            is_like: value
+        }).onConflictDoUpdate({
+            target: [reviewLikes.user_id, reviewLikes.review_id],
+            set: { is_like: value }
+        })
+
+        revalidatePath(`/book/${bookId}`);
+        return { message: `Review ${value ? "like" : "dislike"} updated successfully`, success: true }
+
+    } catch(error){
+        console.error(error);
+        return { success: false, message: "There was an error updating the book review like." }
+    }
+}
+
 async function userReviewExists(bookId: string, userId: string): Promise<boolean> {
     try {
         const response = await db.select().from(reviews).where(and(eq(reviews.book_id, bookId), eq(reviews.user_id, userId)));
@@ -76,4 +99,4 @@ async function userReviewExists(bookId: string, userId: string): Promise<boolean
         console.error(error);
         return false;
     }
-}
+};
