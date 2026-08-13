@@ -1,7 +1,7 @@
 "use server"
 
 import { getBookByWorkId } from "../../services/book.services";
-import { ReviewLike, reviewLikes, reviews, users } from "@/db/schema";
+import { Review, ReviewLike, reviewLikes, reviews, users } from "@/db/schema";
 import { db } from "@/db";
 import { and, eq } from "drizzle-orm";
 import { UpdateBookResponse } from "../../types/book.types";
@@ -124,3 +124,14 @@ async function userReviewExists(bookId: string, userId: string): Promise<boolean
         return false;
     }
 };
+
+export async function getUserReviews(userId: string): Promise<Review[]> {
+    try {
+        const response = await db.select().from(reviews).where(eq(reviews.user_id, userId));
+
+        return response;
+    } catch(error) {
+        console.error(error);
+        return [];
+    }
+}

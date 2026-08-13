@@ -7,34 +7,40 @@ import EditProfileDialog from "@/features/Users/components/edit/EditProfileDialo
 import UserAvatar from "@/features/Users/components/UserAvatar";
 import ReadingGoalDialog from "@/features/Users/components/goal/ReadingGoalDialog";
 import { getProfileStats } from "@/features/Users/utils/user.utils";
+import { getUserReviews } from "@/features/Books/Reviews/services/book.reviews.services";
 
 export default async function UserPage({
     params
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [user, shelves, goal] = await Promise.all([
+    const [user, shelves, goal, reviews] = await Promise.all([
        getUserById(id),
        getUserBookShelves(id),
        getUserReadingGoal(id),
+       getUserReviews(id),
     ]) 
 
     if (!user){
         return <div>User not found</div>
     }
+    
+    const profileStats = getProfileStats(shelves);
+    
     const data = [
+        {
+            label: "read",
+            value: profileStats.totalBooksRead
+        },
         {
             label: "friends",
             value: 340
         },
         {
             label: "reviews",
-            value: 58
+            value: reviews.length
         },
     ];
-
-    const profileStats = getProfileStats(shelves);
-
     return (
         <section className="space-y-4">
             <div className="flex justify-between items-center">
