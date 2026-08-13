@@ -81,6 +81,18 @@ export async function updateBookReview(bookId: string, reviewId: string, content
     }
 }
 
+export async function deleteBookReview(bookId: string, reviewId: string) : Promise<UpdateBookResponse> {
+    try {
+        await db.delete(reviews).where(eq(reviews.id, reviewId));
+
+        revalidatePath(`/book/${bookId}`);
+        return { success: true, message: "Successfully deleted the review." }
+    } catch(error){
+        console.error(error);
+        return { success: false, message: "Error deleing the book review." }
+    }
+}
+
 export async function getReviewLikes(reviewId: string) : Promise<ReviewLike[]> {
     try {
         const likes = await db.select().from(reviewLikes).where(eq(reviewLikes.review_id, reviewId));
@@ -114,6 +126,17 @@ export async function updateReviewLike(reviewId: string, bookId: string, value: 
     }
 }
 
+export async function getUserReviews(userId: string): Promise<Review[]> {
+    try {
+        const response = await db.select().from(reviews).where(eq(reviews.user_id, userId));
+        
+        return response;
+    } catch(error) {
+        console.error(error);
+        return [];
+    }
+}
+
 async function userReviewExists(bookId: string, userId: string): Promise<boolean> {
     try {
         const response = await db.select().from(reviews).where(and(eq(reviews.book_id, bookId), eq(reviews.user_id, userId)));
@@ -124,14 +147,3 @@ async function userReviewExists(bookId: string, userId: string): Promise<boolean
         return false;
     }
 };
-
-export async function getUserReviews(userId: string): Promise<Review[]> {
-    try {
-        const response = await db.select().from(reviews).where(eq(reviews.user_id, userId));
-
-        return response;
-    } catch(error) {
-        console.error(error);
-        return [];
-    }
-}
