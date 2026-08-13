@@ -1,4 +1,4 @@
-import { date, integer, pgEnum, pgTable, text, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgEnum, pgTable, text, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const books = pgTable("books", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -109,3 +109,16 @@ export const reviews = pgTable("reviews", {
 ]);
 
 export const Review = typeof reviews.$inferSelect;
+
+export const reviewLikes = pgTable("review_likes", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    review_id: uuid("review_id").references(() => reviews.id, { onDelete: 'cascade' }).notNull(),
+    is_like: boolean("is_like").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    unique("user_review_like_id").on(t.user_id, t.review_id),
+]);
+
+export const ReviewLikes = typeof reviewLikes.$inferSelect;
