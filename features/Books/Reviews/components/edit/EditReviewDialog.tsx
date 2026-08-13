@@ -6,9 +6,9 @@ import { FieldGroup } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import EditReviewButton from "./EditReviewButton";
-import { ReviewCardData } from "../types/book.reviews.types";
 import { useState } from "react";
-import { updateBookReview } from "../services/book.reviews.services";
+import { ReviewCardData } from "../../types/book.reviews.types";
+import { updateBookReview } from "../../services/book.reviews.services";
 
 interface EditReviewProps {
     bookId: string
