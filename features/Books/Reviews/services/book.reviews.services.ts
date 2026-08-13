@@ -65,6 +65,20 @@ export async function createBookReview(bookId: string, review: string) : Promise
         console.error(error);
         return { success: false, message: `Error writing the review for the book with id: ${bookId}` }
     }
+};
+
+export async function updateBookReview(bookId: string, reviewId: string, content: string) : Promise<UpdateBookResponse> {
+    try {
+        await db.update(reviews).set({
+            review: content
+        }).where(eq(reviews.id, reviewId));
+
+        revalidatePath(`/book/${bookId}`)
+        return { success: true, message: "Successfully updated the book review." }
+    } catch (error){
+        console.error(error);
+        return { success: false, message: "Error updating the book review." }
+    }
 }
 
 export async function getReviewLikes(reviewId: string) : Promise<ReviewLike[]> {

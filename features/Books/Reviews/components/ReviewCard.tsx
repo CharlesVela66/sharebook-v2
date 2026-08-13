@@ -21,6 +21,8 @@ export async function ReviewCard({ bookId, review } : ReviewCardProps ) {
         ? reviewLikes.find((like) => like.user_id === session.user.id)?.is_like ?? null
         : null;
 
+    const isOwner = session?.user?.id === user.id;
+
     const formattedDate = review.updated_at
         ? new Date(review.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
         : null;
@@ -35,7 +37,7 @@ export async function ReviewCard({ bookId, review } : ReviewCardProps ) {
                         {formattedDate && <span className="text-muted text-sm font-normal">{formattedDate}</span>}
                     </div>
                 </div>
-                <ReviewActions />
+                {isOwner && <ReviewActions bookId={bookId} review={review}/>}
             </div>
             <p className="text-secondary font-normal">{review.review}</p>
             <ReviewLike bookId={bookId} reviewId={review.id} reviewLikes={reviewLikes} userLike={userLike}/>
