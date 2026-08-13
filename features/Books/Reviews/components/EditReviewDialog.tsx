@@ -45,13 +45,12 @@ export default function EditReviewDialog({ bookId, review } : EditReviewProps) {
                 <DialogTrigger render={<EditReviewButton />} />
                 <DialogContent className="sm:max-w-sm">
                 <DialogHeader>
-                    <DialogTitle>Edit book review</DialogTitle>
+                    <DialogTitle className="text-secondary text-xl font-normal">Edit book review</DialogTitle>
                 </DialogHeader>
                 <FieldGroup>
                     <Textarea 
                         value={reviewContent}
                         onChange={(e) => setReviewContent(e.target.value)}
-                        className="h-2/3"
                     />
                 </FieldGroup>
                 <DialogFooter className="bg-background">

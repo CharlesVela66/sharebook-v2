@@ -52,7 +52,7 @@ export default async function BookIdPage({
                         <span className="text-secondary text-2xl font-normal">{book.author}</span>
                         <div className="flex gap-10">
                             <p className="text-secondary font-medium">{bookRating && !isNaN(bookRating.average) ? (bookRating.average / 10).toFixed(1) : "No rating"}</p>
-                            <p className="text-muted font-light">{bookRating?.count ?? 0} ratings - 6,110 reviews</p>
+                            <p className="text-muted font-light">{bookRating?.count ?? 0} ratings - {reviews?.length ?? 0} reviews</p>
                         </div>
                     </div>
                     <div className="flex gap-3">
