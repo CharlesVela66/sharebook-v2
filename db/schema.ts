@@ -42,7 +42,7 @@ export const subjects = pgTable("subjects", {
     updated_at: timestamp("updated_at").defaultNow()
 })
 
-export const Subject = typeof subjects.$inferSelect;
+export type Subject = typeof subjects.$inferSelect;
 
 export const bookSubjects = pgTable("book_subjects", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -52,7 +52,7 @@ export const bookSubjects = pgTable("book_subjects", {
     updated_at: timestamp("updated_at").defaultNow()
 })
 
-export const BookSubject = typeof bookSubjects.$inferSelect;
+export type BookSubject = typeof bookSubjects.$inferSelect;
 
 export const shelfEnum = pgEnum("shelf_enum", ["Want to read", "Currently reading", "Read"])
 
@@ -69,7 +69,7 @@ export const shelves = pgTable("shelves", {
     unique("user_book_id").on(t.user_id, t.book_id),
 ])
 
-export const Shelves = typeof shelves.$inferSelect;
+export type Shelves = typeof shelves.$inferSelect;
 
 export const ratings = pgTable("ratings", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -82,7 +82,7 @@ export const ratings = pgTable("ratings", {
     unique("user_book_rating_id").on(t.user_id, t.book_id),
 ])
 
-export const Rating = typeof ratings.$inferSelect;
+export type Rating = typeof ratings.$inferSelect;
 
 export const readingGoals = pgTable("reading_goals", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -95,7 +95,7 @@ export const readingGoals = pgTable("reading_goals", {
     unique("user_year_reading_id").on(t.user_id, t.year),
 ])
 
-export const ReadingGoal = typeof readingGoals.$inferSelect;
+export type ReadingGoal = typeof readingGoals.$inferSelect;
 
 export const reviews = pgTable("reviews", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -108,7 +108,7 @@ export const reviews = pgTable("reviews", {
     unique("user_book_review_id").on(t.user_id, t.book_id),
 ]);
 
-export const Review = typeof reviews.$inferSelect;
+export type Review = typeof reviews.$inferSelect;
 
 export const reviewLikes = pgTable("review_likes", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -121,4 +121,4 @@ export const reviewLikes = pgTable("review_likes", {
     unique("user_review_like_id").on(t.user_id, t.review_id),
 ]);
 
-export const ReviewLikes = typeof reviewLikes.$inferSelect;
+export type ReviewLike = typeof reviewLikes.$inferSelect;
