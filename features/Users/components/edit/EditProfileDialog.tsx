@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { User } from "@/db/schema";
 import { useState } from "react";
 import EditProfileButton from "./EditProfileButton";
 import { toast } from "sonner";
@@ -21,8 +20,9 @@ import { editProfileSchema } from "../../schema/edit.schema";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { updateUserInformation } from "../../services/user.services";
+import { SafeUser } from "@/features/Auth/shared/types/auth.types";
 
-export default function EditProfileDialog( { user } : { user: User } ) {
+export default function EditProfileDialog( { user } : { user: SafeUser } ) {
     const [open, setOpen] = useState<boolean>(false);
 
     const form = useForm<z.infer<typeof editProfileSchema>>({

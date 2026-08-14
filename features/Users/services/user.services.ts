@@ -9,11 +9,27 @@ import z from "zod";
 import { validateUserUpdateData } from "../utils/user.utils";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
+import { SafeUser } from "@/features/Auth/shared/types/auth.types";
 
-export async function getUserByEmail(email: string | null | undefined): Promise<User | undefined>{
+// Column list shared by every read that's safe to expose to callers/clients.
+// Deliberately excludes `password` — never select it outside of auth.ts's
+// credential verification, and never pass it into a client component.
+const safeUserColumns = {
+    id: users.id,
+    first_name: users.first_name,
+    last_name: users.last_name,
+    email: users.email,
+    profile_picture: users.profile_picture,
+    birthday: users.birthday,
+    nationality: users.nationality,
+    created_at: users.created_at,
+    updated_at: users.updated_at,
+};
+
+export async function getUserByEmail(email: string | null | undefined): Promise<SafeUser | undefined>{
     if (!email) return undefined;
     try {
-        const user = await db.select().from(users).where(eq(users.email, email));
+        const user = await db.select(safeUserColumns).from(users).where(eq(users.email, email));
         return user[0];
     } catch (error){
         console.error('Failed to fetch user:', error);
@@ -21,14 +37,27 @@ export async function getUserByEmail(email: string | null | undefined): Promise<
     }
 }
 
-export async function getUserById(id: string | null | undefined): Promise<User | undefined>{
+export async function getUserById(id: string | null | undefined): Promise<SafeUser | undefined>{
     if (!id) return undefined;
     try {
-        const user = await db.select().from(users).where(eq(users.id, id));
+        const user = await db.select(safeUserColumns).from(users).where(eq(users.id, id));
         return user[0];
     } catch (error){
         console.error('Failed to fetch user:', error);
         return undefined;
+    }
+}
+
+// Auth-only: includes the password hash for credential verification.
+// Do not use outside auth.ts, and never pass the result into a client component.
+export async function getUserByEmailWithPassword(email: string | null | undefined): Promise<User | undefined>{
+    if (!email) return undefined;
+    try {
+        const user = await db.select().from(users).where(eq(users.email, email));
+        return user[0];
+    } catch (error){
+        console.error('Failed to fetch user:', error);
+        throw new Error('Failed to fetch user.');
     }
 }
 

@@ -1,6 +1,5 @@
 "use client"
 
-import { User } from "@/db/schema";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
@@ -8,8 +7,9 @@ import { unstable_rethrow } from "next/navigation";
 import UserAvatar from "@/features/Users/components/UserAvatar";
 import { toast } from "sonner";
 import { logout } from "@/features/Auth/Logout/services/auth.logout.services";
+import { SafeUser } from "@/features/Auth/shared/types/auth.types";
 
-export default function ProfileIcon({user} : {user: User}){
+export default function ProfileIcon({user} : {user: SafeUser}){
 
     async function handleLogout() {
         try {

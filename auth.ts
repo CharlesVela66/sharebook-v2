@@ -3,7 +3,7 @@ import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import z from 'zod';
 import argon2 from "argon2"
-import { getUserByEmail } from './features/Users/services/user.services';
+import { getUserByEmailWithPassword } from './features/Users/services/user.services';
  
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -16,7 +16,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
         if (parsedCredentials.success){
           const { email, password } = parsedCredentials.data;
-          const user = await getUserByEmail(email);
+          const user = await getUserByEmailWithPassword(email);
           if (!user) return null;
 
           const passwordsMatch = await argon2.verify(user.password, password);
