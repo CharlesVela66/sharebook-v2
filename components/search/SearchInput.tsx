@@ -23,8 +23,8 @@ export default function SearchInput(){
     };
 
     return (
-        <InputGroup className="w-1/3 bg-background/20 font-semibold px-1 py-4.5 border-0">
-            <InputGroupInput type="text" placeholder="Search books, authors, ISBN..." className="text-cards placeholder:text-cards/60" onKeyDown={handleRedirect} onChange={handleChange} autoComplete="off" value={query}/>
+        <InputGroup className="w-full sm:max-w-1/2 sm:min-w-1/3 bg-background/20 font-semibold px-1 py-2 sm:py-4.5 border-0">
+            <InputGroupInput type="text" placeholder="Search books, authors, ISBN..." className="text-cards placeholder:text-cards/60 text-sm sm:text-base" onKeyDown={handleRedirect} onChange={handleChange} autoComplete="off" value={query}/>
             <InputGroupAddon>
                 <Search className="text-cards"/>
             </InputGroupAddon>

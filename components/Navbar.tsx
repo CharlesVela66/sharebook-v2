@@ -11,17 +11,19 @@ export default async function Navbar(){
     const user = await getUserByEmail(session?.user.email);
 
     return (
-        <nav className="w-full bg-secondary flex justify-between py-3 px-8">
-            <div className="w-full flex gap-10">
-                <Link href="/" className="font-bold text-3xl text-primary">sharebook</Link>
-                <SearchInput />
+        <nav className="w-full bg-secondary flex items-center justify-between gap-3 py-3 px-4 sm:px-8">
+            <div className="flex items-center gap-3 sm:gap-10 min-w-0 flex-1">
+                <Link href="/" className="font-bold text-lg sm:text-3xl text-primary flex items-center shrink-0">sharebook</Link>
+                <div className="min-w-0 flex-1">
+                    <SearchInput />
+                </div>
             </div>
-            <div className="flex items-center gap-8">
-                <Bell className="text-background w-5 h-5"/>
+            <div className="flex items-center gap-3 sm:gap-8 shrink-0">
+                <Bell className="text-background w-5 h-5 shrink-0"/>
                 {user ? (
                     <ProfileIcon user={user}/>
                 ) : (
-                    <Button>Login</Button>
+                    <Button size="sm" className="sm:h-9 sm:px-4 sm:py-2 sm:text-sm">Login</Button>
                 )}
             </div>
         </nav>
