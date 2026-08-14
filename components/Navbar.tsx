@@ -3,8 +3,8 @@ import SearchInput from "./search/SearchInput";
 import Link from "next/link";
 import ProfileIcon from "./ProfileIcon";
 import { auth } from "@/auth";
-import { Button } from "./ui/button";
 import { getUserByEmail } from "@/features/Users/services/user.services";
+import LoginButton from "./LoginButton";
 
 export default async function Navbar(){
     const session = await auth();
@@ -23,7 +23,7 @@ export default async function Navbar(){
                 {user ? (
                     <ProfileIcon user={user}/>
                 ) : (
-                    <Button size="sm" className="sm:h-9 sm:px-4 sm:py-2 sm:text-sm">Login</Button>
+                    <LoginButton />
                 )}
             </div>
         </nav>
