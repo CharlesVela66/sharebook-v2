@@ -12,7 +12,7 @@ export default function ShelfButton({
 
     return (
         <Button
-            className={cn(`flex w-fit py-6 px-5 text-md font-semibold ${shelf === "Want to read"
+            className={cn(`flex w-fit py-5 px-4 text-sm sm:py-6 sm:px-5 sm:text-md font-semibold ${shelf === "Want to read"
                 ? "border border-secondary bg-transparent text-secondary hover:bg-secondary/10"
                 : shelf === "Currently reading"
                 ? "bg-foreground hover:bg-foreground/90"

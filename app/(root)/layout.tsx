@@ -8,7 +8,7 @@ export default function MainLayout ({
   return (
     <nav>
       <Navbar />
-      <div className="px-16 py-8">
+      <div className="px-4 py-2 sm:px-16 sm:py-8">
         {children}
       </div>
     </nav>

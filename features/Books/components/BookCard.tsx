@@ -12,7 +12,7 @@ export default async function BookCard({book} : {book : BookCard}){
     ]);
 
     return (
-        <Link href={`/book/${book.work_id}`} className="w-full flex py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
+        <Link href={`/book/${book.work_id}`} className="w-full flex flex-col space-y-3 sm:flex-row py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
             <div className="flex gap-10">
                 <Image 
                     src={book.image_url}
