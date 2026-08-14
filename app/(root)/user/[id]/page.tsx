@@ -43,7 +43,7 @@ export default async function UserPage({
     ];
     return (
         <section className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row justify-between items-center">
                 <div className="flex flex-row items-center gap-4">
                     <UserAvatar user={user} className="size-18 text-3xl" />
                     <div className="flex flex-col">
