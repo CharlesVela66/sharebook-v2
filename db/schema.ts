@@ -1,4 +1,5 @@
-import { boolean, date, integer, pgEnum, pgTable, text, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { boolean, check, date, integer, pgEnum, pgTable, text, timestamp, unique, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const books = pgTable("books", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -122,3 +123,33 @@ export const reviewLikes = pgTable("review_likes", {
 ]);
 
 export type ReviewLike = typeof reviewLikes.$inferSelect;
+
+export const friends = pgTable("friends", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    user_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    friend_id: uuid("friend_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    check("user_id_friend_id_check", sql`${t.user_id} != ${t.friend_id}`),
+]);
+
+export type Friend = typeof friends.$inferSelect;
+
+export const friendRequestEnum = pgEnum("friend_request_enum", ["Accepted", "Declined", "Pending"]);
+
+export type FriendRequestEnum = (typeof shelfEnum.enumValues)[number];
+
+export const friendRequests = pgTable("friend_requests", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    sender_id: uuid("user_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    receiver_id: uuid("friend_id").references(() => users.id, {onDelete: 'cascade'}).notNull(),
+    status: friendRequestEnum().notNull(),
+    created_at: timestamp("created_at").defaultNow(),
+    updated_at: timestamp("updated_at").defaultNow()
+}, (t) => [
+    check("sender_id_receiver_id_check", sql`${t.sender_id} != ${t.receiver_id}`),
+]);
+
+
+export type FriendRequest = typeof friendRequests.$inferSelect;
