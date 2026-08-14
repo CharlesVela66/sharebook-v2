@@ -44,7 +44,7 @@ export default async function BookIdPage({
                     alt={book.title}
                     height={320}
                     width={216}
-                    className="w-54 h-80 rounded-md"
+                    className="w-32 h-48 sm:w-54 sm:h-80 rounded-md"
                 />
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
