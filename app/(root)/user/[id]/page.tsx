@@ -8,23 +8,27 @@ import UserAvatar from "@/features/Users/components/UserAvatar";
 import ReadingGoalDialog from "@/features/Users/components/goal/ReadingGoalDialog";
 import { getProfileStats } from "@/features/Users/utils/user.utils";
 import { getUserReviews } from "@/features/Books/Reviews/services/book.reviews.services";
+import { auth } from "@/auth";
 
 export default async function UserPage({
     params
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [user, shelves, goal, reviews] = await Promise.all([
+    const [session, user, shelves, goal, reviews] = await Promise.all([
+       auth(),
        getUserById(id),
        getUserBookShelves(id),
        getUserReadingGoal(id),
        getUserReviews(id),
-    ]) 
+    ])
 
     if (!user){
         return <div>User not found</div>
     }
-    
+
+    const isOwnProfile = session?.user?.id === id;
+
     const profileStats = getProfileStats(shelves);
     
     const data = [
@@ -51,10 +55,12 @@ export default async function UserPage({
                         <p className="text-xs text-muted">Sci-fi and literary fiction · Joined {user.created_at?.getFullYear()}</p>
                     </div>
                 </div>
-                <div className="flex flex-row gap-3 ">
-                    <EditProfileDialog user={user}/>
-                    <ReadingGoalDialog goal={goal ?? undefined}/>
-                </div>
+                {isOwnProfile && (
+                    <div className="flex flex-row gap-3 ">
+                        <EditProfileDialog user={user}/>
+                        <ReadingGoalDialog goal={goal ?? undefined}/>
+                    </div>
+                )}
             </div>
             <Separator />
             <div className="flex gap-6">
