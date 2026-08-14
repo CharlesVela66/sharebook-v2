@@ -12,7 +12,7 @@ export default function SearchInput(){
     const handleRedirect = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter"){
             const q = query.replaceAll(" ", "+");
-            router.push(`http://localhost:3000/discovery?q=${q}`)
+            router.push(`${process.env.NEXT_PUBLIC_APP_URL}/discovery?q=${q}`)
             setQuery("");
         }
     }
