@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { readingGoals, User, users } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ilike, ne, or } from "drizzle-orm";
 import { UpdateUserResponse } from "../types/user.types";
 import { editProfileSchema } from "../schema/edit.schema";
 import z from "zod";
@@ -58,6 +58,26 @@ export async function getUserByEmailWithPassword(email: string | null | undefine
     } catch (error){
         console.error('Failed to fetch user:', error);
         throw new Error('Failed to fetch user.');
+    }
+}
+
+export async function searchUsers(query: string): Promise<SafeUser[]>{
+    if (!query.trim()) return [];
+    try {
+        const session = await auth();
+        if (!session || !session.user) return [];
+
+        const response = await db.select(safeUserColumns).from(users).where(
+            and(
+                ne(users.id, session.user.id),
+                or(ilike(users.first_name, `%${query}%`), ilike(users.last_name, `%${query}%`))
+            )
+        ).limit(20);
+
+        return response;
+    } catch (error){
+        console.error(error);
+        return [];
     }
 }
 

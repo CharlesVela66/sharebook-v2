@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
+import AddFriendsDialog from "@/features/Users/Friends/components/add/AddFriendsDialog";
 import FriendsTabs from "@/features/Users/Friends/components/FriendsTabs";
-import { Copy, UserRoundPlus } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export default function FriendsPage(){
     return (
@@ -12,10 +13,7 @@ export default function FriendsPage(){
                         <Copy className="w-6 h-6"/>
                         Copy profile link
                     </Button>
-                    <Button className="flex gap-2 p-5 bg-secondary font-medium hover:bg-secondary/90">
-                        <UserRoundPlus className="w-6 h-6" />
-                        Add friends
-                    </Button>
+                    <AddFriendsDialog />
                 </div>
             </div>
             <FriendsTabs />

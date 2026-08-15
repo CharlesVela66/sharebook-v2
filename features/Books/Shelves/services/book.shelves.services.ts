@@ -6,7 +6,7 @@ import { UpdateBookResponse } from "../../types/book.types";
 import { revalidatePath } from "next/cache";
 import { getBookByWorkId } from "../../services/book.services";
 import { getBookDetailsApi } from "../../api/book.api";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import {  ResolvedShelfBook, ShelfBook, UpdateBookShelfProps } from "../types/book.shelves.types";
 
@@ -59,6 +59,24 @@ export async function resolveBookForShelf(workId: string) : Promise<ResolvedShel
     ]);
 
     return { book, shelf };
+}
+
+export async function getBooksReadCounts(userIds: string[]): Promise<Record<string, number>>{
+    if (userIds.length === 0) return {};
+    try {
+        const response = await db.select({ userId: shelves.user_id, count: count() })
+            .from(shelves)
+            .where(and(eq(shelves.shelf, "Read"), inArray(shelves.user_id, userIds)))
+            .groupBy(shelves.user_id);
+
+        return response.reduce<Record<string, number>>((acc, row) => {
+            acc[row.userId] = row.count;
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error(error);
+        return {};
+    }
 }
 
 export async function getUserBookShelves(userId: string) : Promise<ShelfBook[]>{
