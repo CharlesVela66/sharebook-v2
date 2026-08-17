@@ -1,6 +1,6 @@
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import ProfileBookShelfFilters from "@/features/Users/components/ProfileBookFilters";
+import ProfileBookShelfFilters from "@/features/Users/components/profile/ProfileBookFilters";
 import { getUserBookShelves } from "@/features/Books/Shelves/services/book.shelves.services";
 import { getUserById, getUserReadingGoal } from "@/features/Users/services/user.services";
 import EditProfileDialog from "@/features/Users/components/edit/EditProfileDialog";
@@ -9,6 +9,7 @@ import ReadingGoalDialog from "@/features/Users/components/goal/ReadingGoalDialo
 import { getProfileStats } from "@/features/Users/utils/user.utils";
 import { getUserReviews } from "@/features/Books/Reviews/services/book.reviews.services";
 import { auth } from "@/auth";
+import ProfileStatButton from "@/features/Users/components/profile/ProfileStatButton";
 
 export default async function UserPage({
     params
@@ -70,6 +71,7 @@ export default async function UserPage({
                         <p className="text-sm text-muted font-medium">{d.label}</p>
                     </div>
                 ))}
+                <ProfileStatButton userId={id}/>
             </div>
             <Separator />
                 {goal ? (
