@@ -5,9 +5,11 @@ import { Card, CardAction, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/features/Users/components/UserAvatar";
 import { toast } from "sonner";
-import { Check, Clock, UserRoundPlus, X } from "lucide-react";
+import { Clock, UserRoundPlus } from "lucide-react";
 import { FriendSearchResult, FriendStatus } from "../types/user.friends.types";
-import { respondToFriendRequest, sendFriendRequest } from "../Requests/services/user.friend.requests.services";
+import { sendFriendRequest } from "../Requests/services/user.friend.requests.services";
+import { useRespondToFriendRequest } from "../shared/hooks/useRespondToFriendRequest";
+import FriendRequestActions from "../shared/components/FriendRequestActions";
 
 interface FriendSearchCardProps {
     result: FriendSearchResult;
@@ -17,6 +19,11 @@ export default function FriendSearchCard({ result }: FriendSearchCardProps){
     const { user, booksRead } = result;
     const [status, setStatus] = useState<FriendStatus>(result.status);
     const [requestId, setRequestId] = useState<string | null>(result.requestId);
+
+    const { respond } = useRespondToFriendRequest((accept) => {
+        setStatus(accept ? "friends" : "none");
+        setRequestId(null);
+    });
 
     async function handleSendRequest(){
         try {
@@ -30,23 +37,6 @@ export default function FriendSearchCard({ result }: FriendSearchCardProps){
         } catch (error){
             console.error(error);
             toast.error("Error sending friend request. Try again.");
-        }
-    }
-
-    async function handleRespond(accept: boolean){
-        if (!requestId) return;
-        try {
-            const result = await respondToFriendRequest(requestId, accept);
-            if (!result.success){
-                toast.error(result.message);
-                return;
-            }
-            toast.success(result.message);
-            setStatus(accept ? "friends" : "none");
-            setRequestId(null);
-        } catch (error){
-            console.error(error);
-            toast.error("Error responding to friend request. Try again.");
         }
     }
 
@@ -72,15 +62,12 @@ export default function FriendSearchCard({ result }: FriendSearchCardProps){
                         Pending
                     </Button>
                 )}
-                {status === "pending_received" && (
-                    <>
-                        <Button size="icon-sm" onClick={() => handleRespond(true)} className="bg-primary hover:bg-primary/90">
-                            <Check />
-                        </Button>
-                        <Button size="icon-sm" variant="outline" onClick={() => handleRespond(false)}>
-                            <X />
-                        </Button>
-                    </>
+                {status === "pending_received" && requestId && (
+                    <FriendRequestActions
+                        size="icon-sm"
+                        onAccept={() => respond(requestId, true)}
+                        onReject={() => respond(requestId, false)}
+                    />
                 )}
                 {status === "friends" && (
                     <span className="text-xs text-muted">Friends</span>
