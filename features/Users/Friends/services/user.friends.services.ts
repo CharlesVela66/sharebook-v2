@@ -12,6 +12,21 @@ import { getBooksReadCounts } from "@/features/Books/Shelves/services/book.shelv
 const requester = alias(users, "requester");
 const receiver = alias(users, "receiver");
 
+export async function getFriendCountByUserId(userId: string) : Promise<number | null> {
+    try {
+        const friendResponse = await db.select().from(friends).where(
+            or(
+                eq(friends.user_id, userId),
+                eq(friends.friend_id, userId)
+            )
+        )
+        return friendResponse.length;
+    } catch(error){
+        console.error(error);
+        return null;
+    }
+}
+
 export async function getFriends(): Promise<FriendData[]>{
     try {
         const session = await auth();

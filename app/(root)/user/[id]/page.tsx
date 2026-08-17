@@ -10,18 +10,20 @@ import { getProfileStats } from "@/features/Users/utils/user.utils";
 import { getUserReviews } from "@/features/Books/Reviews/services/book.reviews.services";
 import { auth } from "@/auth";
 import ProfileStatButton from "@/features/Users/components/profile/ProfileStatButton";
+import { getFriendCountByUserId } from "@/features/Users/Friends/services/user.friends.services";
 
 export default async function UserPage({
     params
 }: {params: Promise<{id: string}>}){
     const { id } = await params;
 
-    const [session, user, shelves, goal, reviews] = await Promise.all([
+    const [session, user, shelves, goal, reviews, friendCount] = await Promise.all([
        auth(),
        getUserById(id),
        getUserBookShelves(id),
        getUserReadingGoal(id),
        getUserReviews(id),
+       getFriendCountByUserId(id),
     ])
 
     if (!user){
@@ -39,7 +41,7 @@ export default async function UserPage({
         },
         {
             label: "friends",
-            value: 340
+            value: friendCount || 0,
         },
         {
             label: "reviews",
