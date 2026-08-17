@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/features/Users/components/UserAvatar";
 import { toast } from "sonner";
 import { Check, Clock, UserRoundPlus, X } from "lucide-react";
-import { respondToFriendRequest, sendFriendRequest } from "../services/user.friends.services";
 import { FriendSearchResult, FriendStatus } from "../types/user.friends.types";
+import { respondToFriendRequest, sendFriendRequest } from "../Requests/services/user.friend.requests.services";
 
 interface FriendSearchCardProps {
     result: FriendSearchResult;

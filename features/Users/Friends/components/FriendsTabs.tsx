@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { getFriendRequests, getFriends } from "../services/user.friends.services";
+import { getFriends } from "../services/user.friends.services";
 import FriendCard from "./FriendCard";
-import FriendRequestCard from "./FriendRequestCard";
+import FriendRequestCard from "../Requests/components/FriendRequestCard";
+import { getFriendRequests } from "../Requests/services/user.friend.requests.services";
 
 export default async function FriendsTabs(){
     
