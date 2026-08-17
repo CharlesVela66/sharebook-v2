@@ -1,17 +1,27 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getFriends } from "../services/user.friends.services";
+import { Badge } from "@/components/ui/badge";
+import { getFriendRequests, getFriends } from "../services/user.friends.services";
 import FriendCard from "./FriendCard";
+import FriendRequestCard from "./FriendRequestCard";
 
 export default async function FriendsTabs(){
-
-    const friends = await getFriends();
+    
+    const [friends, friendRequests] = await Promise.all([
+        getFriends(),
+        getFriendRequests(),
+    ])
 
     return (
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs defaultValue="account" className="w-full space-y-4">
             <div className="w-75">
                 <TabsList variant="line" className="w-full">
-                    <TabsTrigger value="friends">Friends</TabsTrigger>
-                    <TabsTrigger value="requests">Requests</TabsTrigger>
+                    <TabsTrigger value="friends">Friends ({friends.length})</TabsTrigger>
+                    <TabsTrigger value="requests" className="gap-1.5">
+                        Requests
+                        {friendRequests.length > 0 && (
+                            <Badge variant="destructive">{friendRequests.length}</Badge>
+                        )}
+                    </TabsTrigger>
                 </TabsList>
             </div>
             <TabsContent value="friends" className="w-full">
@@ -26,10 +36,10 @@ export default async function FriendsTabs(){
                 )}
             </TabsContent>
             <TabsContent value="requests">
-                {friends && friends.length > 0 ? (
+                {friendRequests && friendRequests.length > 0 ? (
                     <div className="grid grid-cols-3">
-                        {friends.map((friend) => (
-                            <FriendCard key={friend.friend.id} friend={friend}/>
+                        {friendRequests.map((request) => (
+                            <FriendRequestCard key={request.sender.id} request={request}/>
                         ))}
                     </div>
                 ) : (

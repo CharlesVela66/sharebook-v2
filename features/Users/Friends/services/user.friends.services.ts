@@ -6,7 +6,7 @@ import { friendRequests, friends, users } from "@/db/schema";
 import { alias } from "drizzle-orm/pg-core";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { FriendData, FriendSearchResult, FriendStatusResult } from "../types/user.friends.types";
+import { FriendData, FriendRequestData, FriendSearchResult, FriendStatusResult } from "../types/user.friends.types";
 import { UpdateUserResponse } from "../../types/user.types";
 import { searchUsers } from "../../services/user.services";
 import { getBooksReadCounts } from "@/features/Books/Shelves/services/book.shelves.services";
@@ -203,5 +203,26 @@ export async function respondToFriendRequest(requestId: string, accept: boolean)
     } catch (error){
         console.error(error);
         return { success: false, message: "Couldn't respond to the friend request. Try again." };
+    }
+}
+
+export async function getFriendRequests(): Promise<FriendRequestData[]>{
+    try {
+        const session = await auth();
+        if (!session || !session.user) return [];
+
+        const userId = session.user.id;
+
+        return await db.select({
+            id: friendRequests.id,
+            createdAt: friendRequests.created_at,
+            sender: requester,
+        })
+            .from(friendRequests)
+            .innerJoin(requester, eq(friendRequests.sender_id, requester.id))
+            .where(and(eq(friendRequests.receiver_id, userId), eq(friendRequests.status, "Pending")));
+    } catch (error){
+        console.error(error);
+        return [];
     }
 }

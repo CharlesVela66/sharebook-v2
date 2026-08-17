@@ -8,6 +8,12 @@ export type FriendData = {
     updatedAt: Date | null;
 }
 
+export type FriendRequestData = {
+    id: string;
+    sender: SafeUser;
+    createdAt: Date | null;
+}
+
 export type FriendStatus = "none" | "pending_sent" | "pending_received" | "friends";
 
 export type FriendStatusResult = {
