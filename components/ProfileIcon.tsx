@@ -36,7 +36,6 @@ export default function ProfileIcon({user} : {user: SafeUser}){
                     <Link href="/friends">
                         <DropdownMenuItem>My friends</DropdownMenuItem>
                     </Link>
-                    <DropdownMenuItem>My books</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
