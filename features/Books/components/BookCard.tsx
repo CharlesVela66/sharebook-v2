@@ -4,6 +4,7 @@ import Link from "next/link";
 import ShelfDialogTrigger from "../Shelves/components/ShelfDialogTrigger";
 import { getUserBookShelf } from "../Shelves/services/book.shelves.services";
 import { getBookRatings } from "../Ratings/services/book.ratings.services";
+import { getBookDetailUrl } from "../utils/book.utils";
 
 export default async function BookCard({book} : {book : BookCard}){
     const [shelf, bookRating] = await Promise.all([
@@ -12,7 +13,7 @@ export default async function BookCard({book} : {book : BookCard}){
     ]);
 
     return (
-        <Link href={`/book/${book.work_id}`} className="w-full flex flex-col space-y-3 sm:flex-row py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
+        <Link href={getBookDetailUrl(book.work_id)} className="w-full flex flex-col space-y-3 sm:flex-row py-4 px-6 justify-between bg-card rounded-lg border border-border-strong cursor-pointer">
             <div className="flex gap-10">
                 <Image 
                     src={book.image_url}

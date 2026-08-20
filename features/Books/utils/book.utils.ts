@@ -129,3 +129,7 @@ export function prepareApiBookForDb(bookWork: OpenLibraryWork, bookEditions: Ope
 
     return { object: bookObject, subjects: normalizeSubjects(subjects).slice(0, MAX_SUBJECTS_PER_BOOK) };
 }
+
+export function getBookDetailUrl(workId: string): string {
+    return `/book/${workId}`;
+}
