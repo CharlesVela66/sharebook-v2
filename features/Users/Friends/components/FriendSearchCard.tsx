@@ -20,7 +20,7 @@ export default function FriendSearchCard({ result }: FriendSearchCardProps){
     const [status, setStatus] = useState<FriendStatus>(result.status);
     const [requestId, setRequestId] = useState<string | null>(result.requestId);
 
-    const { respond } = useRespondToFriendRequest((accept) => {
+    const { respond, pending } = useRespondToFriendRequest((accept) => {
         setStatus(accept ? "friends" : "none");
         setRequestId(null);
     });
@@ -65,6 +65,8 @@ export default function FriendSearchCard({ result }: FriendSearchCardProps){
                 {status === "pending_received" && requestId && (
                     <FriendRequestActions
                         size="icon-sm"
+                        pending={pending?.id === requestId}
+                        pendingAction={pending?.id === requestId ? (pending.accept ? "accept" : "reject") : undefined}
                         onAccept={() => respond(requestId, true)}
                         onReject={() => respond(requestId, false)}
                     />

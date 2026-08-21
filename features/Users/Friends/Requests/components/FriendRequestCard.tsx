@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { FriendRequestData } from "../../types/user.friends.types";
 import UserAvatar from "../../../components/UserAvatar";
@@ -12,7 +13,9 @@ interface FriendRequestCardProps {
 }
 
 export default function FriendRequestCard({ request } : FriendRequestCardProps){
-    const { respond } = useRespondToFriendRequest();
+    const router = useRouter();
+    const { respond, pending } = useRespondToFriendRequest(() => router.refresh());
+    const isPending = pending?.id === request.id;
 
     return(
         <Card className="bg-card p-3">
@@ -24,6 +27,8 @@ export default function FriendRequestCard({ request } : FriendRequestCardProps){
                     <FriendRequestActions
                         size="sm"
                         buttonClassName="flex-1"
+                        pending={isPending}
+                        pendingAction={isPending ? (pending.accept ? "accept" : "reject") : undefined}
                         onAccept={() => respond(request.id, true)}
                         onReject={() => respond(request.id, false)}
                     />
