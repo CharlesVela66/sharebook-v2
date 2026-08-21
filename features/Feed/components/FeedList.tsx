@@ -1,3 +1,5 @@
+import { Sparkles } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { getFeedEvents } from "../services/feed.services";
 import FeedCard from "./FeedCard";
 import FeedPagination from "./FeedPagination";
@@ -15,9 +17,11 @@ export default async function FeedList({ page, limit }: FeedListProps) {
             {events.length > 0 ? (
                 events.map((event) => <FeedCard key={event.id} event={event} />)
             ) : (
-                <p className="text-center text-muted text-sm font-normal">
-                    Your feed is empty - start adding books to your shelves or adding new friends!
-                </p>
+                <EmptyState
+                    icon={Sparkles}
+                    title="Your feed is empty"
+                    description="Start adding books to your shelves or add some friends to see their activity here."
+                />
             )}
             <FeedPagination page={resolvedPage} hasMore={hasMore} />
         </section>

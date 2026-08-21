@@ -5,7 +5,8 @@ import ProfileShelfDistributionChart from "@/features/Users/components/profile/P
 import ProfileYearChart from "@/features/Users/components/profile/ProfileYearChart";
 import { getUserById } from "@/features/Users/services/user.services";
 import { getProfileStats } from "@/features/Users/utils/user.utils";
-import { BookOpen } from "lucide-react";
+import { BookOpen, PieChart, CalendarDays, Library, UserX } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 export default async function UserStatsPage({
     params
@@ -18,7 +19,13 @@ export default async function UserStatsPage({
     ]);
 
     if (!user){
-        return <div>User not found</div>
+        return (
+            <EmptyState
+                icon={UserX}
+                title="User not found"
+                description="This user doesn't exist or may have been removed."
+            />
+        );
     }
 
     const profileStats = getProfileStats(shelves);
@@ -47,21 +54,33 @@ export default async function UserStatsPage({
                     {profileStats.genreBreakdown && profileStats.genreBreakdown.length > 0 ? (
                         <ProfileGenreBreakdownChart genreBreakdown={profileStats.genreBreakdown}/>
                     ) : (
-                        <p className="text-center text-muted text-sm font-normal">You haven&apos;t read any books yet, so there&apos;s no genre breakdown to show.</p>
+                        <EmptyState
+                            icon={PieChart}
+                            title="No genre data yet"
+                            description="You haven't read any books yet, so there's no genre breakdown to show."
+                        />
                     )}
                 </TabsContent>
                 <TabsContent value="year">
                     {profileStats.booksReadByYear && Object.keys(profileStats.booksReadByYear).length > 0 ? (
                         <ProfileYearChart booksReadByYear={profileStats.booksReadByYear}/>
                     ) : (
-                        <p className="text-center text-muted text-sm font-normal">You haven&apos;t read any books yet, so there&apos;s no yearly history to show.</p>
+                        <EmptyState
+                            icon={CalendarDays}
+                            title="No yearly history yet"
+                            description="You haven't read any books yet, so there's no yearly history to show."
+                        />
                     )}
                 </TabsContent>
                 <TabsContent value="shelf">
                     {profileStats.shelfDistribution && profileStats.shelfDistribution.length > 0 ? (
                         <ProfileShelfDistributionChart shelfDistribution={profileStats.shelfDistribution} />
                     ) : (
-                        <p className="text-center text-muted text-sm font-normal">You don&apos;t have any books on your shelves yet.</p>
+                        <EmptyState
+                            icon={Library}
+                            title="No shelves yet"
+                            description="You don't have any books on your shelves yet."
+                        />
                     )}
                 </TabsContent>
             </Tabs>

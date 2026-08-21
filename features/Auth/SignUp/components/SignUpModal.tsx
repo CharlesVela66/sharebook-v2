@@ -4,7 +4,7 @@ import Link from "next/link";
 interface SignUpModalProps {
     open: boolean;
     onOpen: (open: boolean) => void;
-    type: "shelf" | "rating" | "review" | "like";
+    type: "shelf" | "rating" | "review" | "like" | "friends";
 }
 export default function SignUpModal({open, onOpen, type} : SignUpModalProps){
     return (
@@ -19,7 +19,9 @@ export default function SignUpModal({open, onOpen, type} : SignUpModalProps){
                     ? "rate a book"
                     : type === "review"
                     ? "review a book"
-                    : "like a review"
+                    : type === "like"
+                    ? "like a review"
+                    : "view your friends"
                     }
                 </AlertDialogDescription>
                 </AlertDialogHeader>

@@ -1,3 +1,5 @@
+import { MessageSquare } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { ReviewCardData } from "../types/book.reviews.types";
 import { CreateReview } from "./CreateReview";
 import { ReviewCard } from "./ReviewCard";
@@ -18,7 +20,11 @@ export function ReviewSection({ bookId, reviews } : ReviewSectionProps) {
                     ))}
                 </div>
             ) : (
-                <p className="text-sm text-muted text-center">This book doesn&apos;t have any reviews yet. Be the first one to post a review!</p>
+                <EmptyState
+                    icon={MessageSquare}
+                    title="No reviews yet"
+                    description="This book doesn't have any reviews yet. Be the first one to post a review!"
+                />
             )}
         </div>
     )

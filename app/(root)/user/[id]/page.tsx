@@ -11,6 +11,8 @@ import { getUserReviews } from "@/features/Books/Reviews/services/book.reviews.s
 import { auth } from "@/auth";
 import ProfileStatButton from "@/features/Users/components/profile/ProfileStatButton";
 import { getFriendCountByUserId } from "@/features/Users/Friends/services/user.friends.services";
+import { UserX } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 export default async function UserPage({
     params
@@ -27,7 +29,13 @@ export default async function UserPage({
     ])
 
     if (!user){
-        return <div>User not found</div>
+        return (
+            <EmptyState
+                icon={UserX}
+                title="User not found"
+                description="This user doesn't exist or may have been removed."
+            />
+        );
     }
 
     const isOwnProfile = session?.user?.id === id;

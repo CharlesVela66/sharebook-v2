@@ -1,9 +1,17 @@
 import { Button } from "@/components/ui/button";
 import AddFriendsDialog from "@/features/Users/Friends/components/add/AddFriendsDialog";
+import FriendsAccessDenied from "@/features/Users/Friends/components/FriendsAccessDenied";
 import FriendsTabs from "@/features/Users/Friends/components/FriendsTabs";
 import { Copy } from "lucide-react";
+import { auth } from "@/auth";
 
-export default function FriendsPage(){
+export default async function FriendsPage(){
+    const session = await auth();
+
+    if (!session?.user){
+        return <FriendsAccessDenied />;
+    }
+
     return (
         <section className="flex flex-col space-y-4">
             <div className="flex justify-between">

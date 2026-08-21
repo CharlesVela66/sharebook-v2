@@ -1,5 +1,7 @@
+import { Users, UserPlus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import EmptyState from "@/components/EmptyState";
 import { getFriends } from "../services/user.friends.services";
 import FriendCard from "./FriendCard";
 import FriendRequestCard from "../Requests/components/FriendRequestCard";
@@ -33,7 +35,11 @@ export default async function FriendsTabs(){
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-muted text-sm font-normal">You haven&apos;t added any friends yet!</p>
+                    <EmptyState
+                        icon={Users}
+                        title="No friends yet"
+                        description="Add friends to see what they're reading and follow their activity."
+                    />
                 )}
             </TabsContent>
             <TabsContent value="requests">
@@ -44,7 +50,11 @@ export default async function FriendsTabs(){
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-muted text-sm font-normal">You haven&apos;t received any friend requests!</p>
+                    <EmptyState
+                        icon={UserPlus}
+                        title="No friend requests"
+                        description="You don't have any pending friend requests right now."
+                    />
                 )}
             </TabsContent>
         </Tabs>
