@@ -33,6 +33,7 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
   const [currentShelf, setCurrentShelf] = useState<Shelf | null>(shelf);
   const [open, setOpen] = useState<boolean>(defaultOpen);
   const [signUpOpen, setSignUpOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
     e.preventDefault();
@@ -40,6 +41,7 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
 
     const shelf = formData.get("shelf-radio-group") as Shelf;
     try {
+      setLoading(true);
       const result = await updateBookShelf({
         shelf: shelf,
         bookId: book.id
@@ -59,6 +61,8 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
     } catch (error) {
       console.error(error);
       toast.error("Couldn't save your book shelf. Try again.")
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -92,7 +96,7 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
             </RadioGroup>
             <DialogFooter className="bg-background">
               <DialogClose render={<Button variant="outline" className="hover:bg-secondary-light/20 p-3">Cancel</Button>} />
-              <Button type="submit" className="bg-primary hover:bg-primary/90 p-3">Save</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary/90 p-3" disabled={!shelfValue || loading}>{loading ? "Saving" : "Save"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
