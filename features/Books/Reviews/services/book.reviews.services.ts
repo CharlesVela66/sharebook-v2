@@ -41,7 +41,7 @@ export async function getBookReviews(bookId: string) : Promise<ReviewCardData[] 
 export async function createBookReview(bookId: string, review: string) : Promise<UpdateBookResponse>{
     try {
         const session = await auth();
-        if (!session || !session.user) return { message: "User not authenticated", success: false };
+        if (!session || !session.user) return { message: "User not authenticated", success: false, unauthenticated: true };
 
         const userId = session.user.id;
 

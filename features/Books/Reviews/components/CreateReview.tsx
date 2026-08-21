@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react";
 import { toast } from "sonner";
 import { createBookReview } from "../services/book.reviews.services";
+import SignUpModal from "@/features/Auth/SignUp/components/SignUpModal";
 
 interface CreateReviewProps {
     bookId: string;
@@ -14,6 +15,7 @@ export function CreateReview({ bookId } : CreateReviewProps) {
 
     const [review, setReview] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    const [signUpOpen, setSignUpOpen] = useState<boolean>(false);
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
         e.preventDefault();
@@ -27,6 +29,10 @@ export function CreateReview({ bookId } : CreateReviewProps) {
                 bookId,
                 review,
             );
+            if (result.unauthenticated){
+                setSignUpOpen(true);
+                return;
+            }
             if (!result.success) {
                 toast.error(result.message);
                 return;
@@ -42,15 +48,18 @@ export function CreateReview({ bookId } : CreateReviewProps) {
     }
 
     return (
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            <Textarea 
-                placeholder="Type your review here"
-                value={review}
-                onChange={(e) => setReview(e.target.value)}
-            />
-            <div className="flex justify-end">
-                <Button type="submit" className="w-fit" disabled={loading || !review}>{loading ? "Submitting..." : "Submit review"}</Button>
-            </div>
-        </form>
+        <>
+            <SignUpModal open={signUpOpen} onOpen={setSignUpOpen} type="review"/>
+            <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+                <Textarea 
+                    placeholder="Type your review here"
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                />
+                <div className="flex justify-end">
+                    <Button type="submit" className="w-fit" disabled={loading || !review}>{loading ? "Submitting..." : "Submit review"}</Button>
+                </div>
+            </form>
+        </>
     )
 }
