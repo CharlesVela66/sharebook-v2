@@ -40,7 +40,7 @@ export default async function BookIdPage({
         <section className="w-full flex flex-col gap-9">
             <div className="flex gap-6">
                 <Image 
-                    src={book.image_url || "/placeholder.png"}
+                    src={book.image_url || "/book-placeholder.svg"}
                     alt={book.title}
                     height={320}
                     width={216}

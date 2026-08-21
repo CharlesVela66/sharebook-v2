@@ -51,7 +51,7 @@ export default function ProfileBookShelfFilters({ bookShelves } : ProfileBookFil
                     filteredBookShelves.map((bookShelf) => (
                         <Link key={bookShelf.shelfId} href={`/book/${bookShelf.book.open_library_work_id}`}>
                             <Image
-                                src={bookShelf.book.image_url || "/placeholder.png"}
+                                src={bookShelf.book.image_url || "/book-placeholder.svg"}
                                 alt={bookShelf.book.title}
                                 width={64}
                                 height={92}

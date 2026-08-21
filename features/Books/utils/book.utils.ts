@@ -91,7 +91,7 @@ export function convertRawBookDataToBookCard(data: RawBookData[]): BookCard[] {
             work_id: b.key.slice(7) ,
             author: b.author_name ? b.author_name.join(", ") : "Anonymous",
             title: b.title ? b.title : "Untitled",
-            image_url: b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-M.jpg` : "/book-placeholder",
+            image_url: b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-M.jpg` : "/book-placeholder.svg",
         }
         books.push(book);
     }

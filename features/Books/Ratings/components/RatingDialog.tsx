@@ -78,7 +78,7 @@ export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
               <DialogTitle className="text-secondary text-xl font-normal mb-3">Rate this book</DialogTitle>
               <div className="flex gap-3">
                 <Image
-                  src={book.image_url || "/placeholder.png"}
+                  src={book.image_url || "/book-placeholder.svg"}
                   alt={book.title}
                   height={64}
                   width={36}

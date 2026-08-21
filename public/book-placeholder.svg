@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" role="img" aria-label="No cover available">
+    <rect width="240" height="360" rx="12" fill="#edf1f7"/>
+    <g fill="none" stroke="#8a8578" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M40 108 C 68 96, 98 96, 120 108 L 120 216 C 98 204, 68 204, 40 216 Z" fill="#ffffff"/>
+        <path d="M200 108 C 172 96, 142 96, 120 108 L 120 216 C 142 204, 172 204, 200 216 Z" fill="#ffffff"/>
+        <line x1="120" y1="102" x2="120" y2="222"/>
+        <line x1="58" y1="134" x2="100" y2="126"/>
+        <line x1="58" y1="156" x2="100" y2="148"/>
+        <line x1="140" y1="126" x2="182" y2="134"/>
+        <line x1="140" y1="148" x2="182" y2="156"/>
+    </g>
+    <text x="120" y="270" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#8a8578">No cover</text>
+</svg>
