@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { books, ratings, reviews, Shelf, shelves, users } from "@/db/schema";
+import { getAcceptedFriendIds } from "@/features/Users/Friends/services/user.friends.services";
 import { eq, inArray, sql } from "drizzle-orm";
 import { unionAll } from "drizzle-orm/pg-core";
 import { toFeedEvents } from "../transformers/feed.transformers";
@@ -139,11 +140,12 @@ async function fetchFeedRows(options: FeedQueryOptions): Promise<FeedRawRow[]> {
 }
 
 /**
- * Which actors' events should appear in the feed.
- * Phase 4 will widen this to [selfId, ...await getAcceptedFriendIds(selfId)].
+ * Which actors' events should appear in the feed: the user themself plus
+ * everyone they're an accepted friend with.
  */
-function resolveActorIds(selfId: string): string[] {
-    return [selfId];
+async function resolveActorIds(selfId: string): Promise<string[]> {
+    const friendIds = await getAcceptedFriendIds(selfId);
+    return [selfId, ...friendIds];
 }
 
 /**
@@ -156,7 +158,7 @@ export async function getFeedEvents(params: { page?: unknown; limit?: unknown })
         if (!session || !session.user) return EMPTY_FEED_RESULT;
 
         const { page, limit } = validateFeedPageParams(params);
-        const actorIds = resolveActorIds(session.user.id);
+        const actorIds = await resolveActorIds(session.user.id);
 
         const rows = await fetchFeedRows({ actorIds, page, limit });
         const hasMore = rows.length > limit;

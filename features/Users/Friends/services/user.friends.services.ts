@@ -59,6 +59,24 @@ export async function getFriends(): Promise<FriendData[]>{
     }
 }
 
+/**
+ * Flat list of the other user's id for every accepted friendship involving
+ * `userId` - e.g. for the Feed's actor filter, which only needs ids.
+ */
+export async function getAcceptedFriendIds(userId: string): Promise<string[]> {
+    try {
+        const friendRows = await db.select({
+            user_id: friends.user_id,
+            friend_id: friends.friend_id,
+        }).from(friends).where(or(eq(friends.user_id, userId), eq(friends.friend_id, userId)));
+
+        return friendRows.map((row) => (row.user_id === userId ? row.friend_id : row.user_id));
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function getFriendStatus(otherUserId: string): Promise<FriendStatusResult>{
     try {
         const session = await auth();
