@@ -13,7 +13,7 @@ export default function AddFriendsButton({
             {...props}
         >
             <UserRoundPlus className="w-6 h-6" />
-            Add friends
+            <p className="hidden sm:block">Add friends</p>
         </Button>
     )
 }

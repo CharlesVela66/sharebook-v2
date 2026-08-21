@@ -19,7 +19,7 @@ export default async function FriendsPage(){
                 <div className="flex gap-3">
                     <Button variant="outline" className="flex gap-2 p-5 text-secondary hover:text-secondary font-medium hover:bg-secondary/10">
                         <Copy className="w-6 h-6"/>
-                        Copy profile link
+                        <p className="hidden sm:block">Copy profile link</p>
                     </Button>
                     <AddFriendsDialog />
                 </div>
