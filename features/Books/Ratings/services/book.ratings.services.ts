@@ -12,7 +12,7 @@ import { RatingData, RatingUserData, UpdateBookRatingProps } from "../types/book
 export async function updateBookRating({rating, bookId} : UpdateBookRatingProps) : Promise<UpdateBookResponse>{
     try {
         const session = await auth();
-        if (!session || !session.user) return { message: "User not authenticated", success: false }
+        if (!session || !session.user) return { message: "User not authenticated", success: false, unauthenticated: true }
         await db.insert(ratings).values({
             user_id: session.user.id,
             book_id: bookId,

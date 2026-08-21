@@ -15,7 +15,9 @@ export default function SignUpModal({open, onOpen, type} : SignUpModalProps){
                 <AlertDialogDescription>
                     You must login to {type === "shelf"
                     ? "save books in shelves"
-                    : ""
+                    : type === "rating"
+                    ? "rate a book"
+                    : "review a book"
                     }
                 </AlertDialogDescription>
                 </AlertDialogHeader>
