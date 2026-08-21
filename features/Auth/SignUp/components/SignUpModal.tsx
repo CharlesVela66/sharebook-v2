@@ -4,7 +4,7 @@ import Link from "next/link";
 interface SignUpModalProps {
     open: boolean;
     onOpen: (open: boolean) => void;
-    type: "shelf" | "rating" | "review";
+    type: "shelf" | "rating" | "review" | "like";
 }
 export default function SignUpModal({open, onOpen, type} : SignUpModalProps){
     return (
@@ -17,7 +17,9 @@ export default function SignUpModal({open, onOpen, type} : SignUpModalProps){
                     ? "save books in shelves"
                     : type === "rating"
                     ? "rate a book"
-                    : "review a book"
+                    : type === "review"
+                    ? "review a book"
+                    : "like a review"
                     }
                 </AlertDialogDescription>
                 </AlertDialogHeader>

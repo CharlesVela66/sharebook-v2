@@ -106,7 +106,7 @@ export async function getReviewLikes(reviewId: string) : Promise<ReviewLike[]> {
 export async function updateReviewLike(reviewId: string, bookId: string, value: boolean): Promise<UpdateBookResponse> {
     try {
         const session = await auth();
-        if (!session || !session.user) return { message: "User not authenticated", success: false };
+        if (!session || !session.user) return { message: "User not authenticated", success: false, unauthenticated: true };
 
         await db.insert(reviewLikes).values({
             user_id: session.user.id,
