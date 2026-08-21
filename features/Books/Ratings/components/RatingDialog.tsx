@@ -29,6 +29,7 @@ export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(bookRating ?? 0);
   const [signUpOpen, setSignUpOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   function handleRating(data: number) {
     setRating(data);
@@ -39,6 +40,7 @@ export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
 
     try {
       if (rating > 0){
+        setLoading(true);
         const result = await updateBookRating({
           bookId: book.id,
           rating,
@@ -54,6 +56,7 @@ export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
         }
         toast.success(result.message);
         setOpen(false);
+        setLoading(false);
       } else {
         toast.warning("You haven't selected a rating.")
         return;
@@ -90,7 +93,7 @@ export default function RatingDialog({ book, bookRating }: RatingDialogProps) {
             <RatingStar rating={rating} onRatingChange={handleRating}/>
             <DialogFooter className="bg-background">
               <DialogClose render={<Button variant="outline" className="hover:bg-secondary-light/20 p-3">Cancel</Button>} />
-              <Button type="submit" className="bg-primary hover:bg-primary/90 p-3">Save</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary/90 p-3" disabled={!rating || loading}>{loading ? "Saving" : "Save"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
