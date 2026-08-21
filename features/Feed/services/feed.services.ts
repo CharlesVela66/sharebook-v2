@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { books, shelves, users } from "@/db/schema";
+import { books, ratings, Shelf, shelves, users } from "@/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
 import { unionAll } from "drizzle-orm/pg-core";
 import { toFeedEvents } from "../transformers/feed.transformers";
@@ -21,13 +21,14 @@ const EMPTY_FEED_RESULT: PaginatedFeedResult = {
  * shared feed row shape (same columns/types as the rating and review branches).
  */
 function buildShelfFeedBranch(actorIds: string[]) {
-    return db.select({
-        // Explicit .as() here because these two are referenced by name in the
-        // ORDER BY below - Drizzle doesn't SQL-alias plain `key: column` remaps,
-        // it only maps them back to these keys positionally after the query runs.
+    const branch = db.select({
+        // Every raw sql`` field needs its own .as() - not just the ones
+        // referenced in ORDER BY. Once a branch is wrapped as a subquery
+        // (below), the outer query needs a name for every raw SQL column to
+        // reference it at all.
         type: sql<FeedEventType>`'shelf'`.as("type"),
         source_id: sql<string>`${shelves.id}`.as("source_id"),
-        actor_id: shelves.user_id,
+        actor_id: sql<string>`${shelves.user_id}`.as("actor_id"),
         actor_first_name: users.first_name,
         actor_last_name: users.last_name,
         actor_profile_picture: users.profile_picture,
@@ -35,15 +36,46 @@ function buildShelfFeedBranch(actorIds: string[]) {
         book_work_id: books.open_library_work_id,
         book_title: books.title,
         book_image_url: books.image_url,
-        shelf_status: shelves.shelf,
-        rating_value: sql<number | null>`NULL::integer`,
-        review_text: sql<string | null>`NULL::text`,
-        created_at: shelves.created_at,
+        shelf_status: sql<Shelf | null>`${shelves.shelf}`.as("shelf_status"),
+        rating_value: sql<number | null>`NULL::integer`.as("rating_value"),
+        review_text: sql<string | null>`NULL::text`.as("review_text"),
+        created_at: sql`${shelves.created_at}`.mapWith(shelves.created_at).as("created_at"),
     })
         .from(shelves)
         .innerJoin(books, eq(shelves.book_id, books.id))
         .innerJoin(users, eq(shelves.user_id, users.id))
         .where(inArray(shelves.user_id, actorIds));
+
+    return db.select().from(branch.as("feed_event"));
+}
+
+/**
+ * One UNION ALL branch: rating events for the given actors, normalized to the
+ * shared feed row shape (same columns/types as the shelf and review branches).
+ */
+function buildRatingFeedBranch(actorIds: string[]) {
+    const branch = db.select({
+        type: sql<FeedEventType>`'rating'`.as("type"),
+        source_id: sql<string>`${ratings.id}`.as("source_id"),
+        actor_id: sql<string>`${ratings.user_id}`.as("actor_id"),
+        actor_first_name: users.first_name,
+        actor_last_name: users.last_name,
+        actor_profile_picture: users.profile_picture,
+        book_id: books.id,
+        book_work_id: books.open_library_work_id,
+        book_title: books.title,
+        book_image_url: books.image_url,
+        shelf_status: sql<Shelf | null>`NULL::shelf_enum`.as("shelf_status"),
+        rating_value: sql<number | null>`${ratings.rating}`.mapWith(ratings.rating).as("rating_value"),
+        review_text: sql<string | null>`NULL::text`.as("review_text"),
+        created_at: sql`${ratings.created_at}`.mapWith(ratings.created_at).as("created_at"),
+    })
+        .from(ratings)
+        .innerJoin(books, eq(ratings.book_id, books.id))
+        .innerJoin(users, eq(ratings.user_id, users.id))
+        .where(inArray(ratings.user_id, actorIds));
+
+    return db.select().from(branch.as("feed_event"));
 }
 
 /**
@@ -58,9 +90,9 @@ async function fetchFeedRows(options: FeedQueryOptions): Promise<FeedRawRow[]> {
     const { actorIds, page, limit } = options;
     const offset = (page - 1) * limit;
 
-    // Phase 2 pushes buildRatingFeedBranch, phase 3 pushes buildReviewFeedBranch -
-    // both purely additive here, no restructuring of the composition below required.
-    const branches = [buildShelfFeedBranch(actorIds)];
+    // Phase 3 pushes buildReviewFeedBranch here - purely additive, no
+    // restructuring of the composition below required.
+    const branches = [buildShelfFeedBranch(actorIds), buildRatingFeedBranch(actorIds)];
 
     const [firstBranch, secondBranch, ...restBranches] = branches;
     const combinedQuery = secondBranch
