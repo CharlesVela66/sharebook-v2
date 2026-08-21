@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { books, ratings, Shelf, shelves, users } from "@/db/schema";
+import { books, ratings, reviews, Shelf, shelves, users } from "@/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
 import { unionAll } from "drizzle-orm/pg-core";
 import { toFeedEvents } from "../transformers/feed.transformers";
@@ -79,6 +79,35 @@ function buildRatingFeedBranch(actorIds: string[]) {
 }
 
 /**
+ * One UNION ALL branch: review events for the given actors, normalized to the
+ * shared feed row shape (same columns/types as the shelf and rating branches).
+ */
+function buildReviewFeedBranch(actorIds: string[]) {
+    const branch = db.select({
+        type: sql<FeedEventType>`'review'`.as("type"),
+        source_id: sql<string>`${reviews.id}`.as("source_id"),
+        actor_id: sql<string>`${reviews.user_id}`.as("actor_id"),
+        actor_first_name: users.first_name,
+        actor_last_name: users.last_name,
+        actor_profile_picture: users.profile_picture,
+        book_id: books.id,
+        book_work_id: books.open_library_work_id,
+        book_title: books.title,
+        book_image_url: books.image_url,
+        shelf_status: sql<Shelf | null>`NULL::shelf_enum`.as("shelf_status"),
+        rating_value: sql<number | null>`NULL::integer`.as("rating_value"),
+        review_text: sql<string | null>`${reviews.review}`.mapWith(reviews.review).as("review_text"),
+        created_at: sql`${reviews.created_at}`.mapWith(reviews.created_at).as("created_at"),
+    })
+        .from(reviews)
+        .innerJoin(books, eq(reviews.book_id, books.id))
+        .innerJoin(users, eq(reviews.user_id, users.id))
+        .where(inArray(reviews.user_id, actorIds));
+
+    return db.select().from(branch.as("feed_event"));
+}
+
+/**
  * Combines every active branch with UNION ALL (or returns it as-is when
  * there's only one) and paginates the result. Ordered by created_at, with
  * source_id as a tiebreaker for rows sharing the same timestamp.
@@ -90,9 +119,11 @@ async function fetchFeedRows(options: FeedQueryOptions): Promise<FeedRawRow[]> {
     const { actorIds, page, limit } = options;
     const offset = (page - 1) * limit;
 
-    // Phase 3 pushes buildReviewFeedBranch here - purely additive, no
-    // restructuring of the composition below required.
-    const branches = [buildShelfFeedBranch(actorIds), buildRatingFeedBranch(actorIds)];
+    const branches = [
+        buildShelfFeedBranch(actorIds),
+        buildRatingFeedBranch(actorIds),
+        buildReviewFeedBranch(actorIds),
+    ];
 
     const [firstBranch, secondBranch, ...restBranches] = branches;
     const combinedQuery = secondBranch
