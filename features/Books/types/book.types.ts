@@ -21,4 +21,5 @@ export type RawBookData = {
 export type UpdateBookResponse = {
     success: boolean;
     message: string;
+    unauthenticated?: boolean;
 }

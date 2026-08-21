@@ -13,7 +13,7 @@ import {  ResolvedShelfBook, ShelfBook, UpdateBookShelfProps } from "../types/bo
 export async function updateBookShelf({shelf, bookId} : UpdateBookShelfProps) : Promise<UpdateBookResponse>{
     try {
         const session = await auth();
-        if (!session || !session.user) return { message: "User not authenticated", success: false }
+        if (!session || !session.user) return { message: "User not authenticated", success: false, unauthenticated: true }
         await db.insert(shelves).values({
             user_id: session.user.id,
             book_id: bookId,

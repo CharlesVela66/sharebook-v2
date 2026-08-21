@@ -19,6 +19,7 @@ import { useState } from "react"
 import { updateBookShelf } from "../services/book.shelves.services"
 import ShelfButton from "./ShelfButton"
 import RadioItem from "./RadioItem"
+import SignUpModal from "@/features/Auth/SignUp/components/SignUpModal"
 
 interface ShelfDialogProps {
   book: Book
@@ -31,6 +32,7 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
   const [shelfValue, setShelfValue] = useState<Shelf | null>(shelf);
   const [currentShelf, setCurrentShelf] = useState<Shelf | null>(shelf);
   const [open, setOpen] = useState<boolean>(defaultOpen);
+  const [signUpOpen, setSignUpOpen] = useState<boolean>(false);
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
     e.preventDefault();
@@ -42,6 +44,11 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
         shelf: shelf,
         bookId: book.id
       });
+      if (result.unauthenticated){
+        setOpen(false);
+        setSignUpOpen(true);
+        return;
+      }
       if (!result.success){
         toast.error(result.message);
         return;
@@ -56,37 +63,40 @@ export default function ShelfDialog({ book, shelf, defaultOpen = false }: ShelfD
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<ShelfButton shelf={currentShelf}/>} />
-      <DialogContent className="sm:max-w-sm bg-background">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader className="mb-3">
-            <DialogTitle className="text-secondary text-xl font-normal">Add to shelf</DialogTitle>
-            <div className="flex gap-3">
-              <Image
-                src={book.image_url || "/placeholder.png"}
-                alt={book.title}
-                height={64}
-                width={36}
-                className="rounded-sm"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-sm font-medium text-secondary">{book.title}</p>
-                <p className="text-xs text-muted font-light">{book.author}</p>
+    <>
+      <SignUpModal open={signUpOpen} onOpen={setSignUpOpen} type="shelf"/>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger render={<ShelfButton shelf={currentShelf}/>} />
+        <DialogContent className="sm:max-w-sm bg-background">
+          <form onSubmit={handleSubmit}>
+            <DialogHeader className="mb-3">
+              <DialogTitle className="text-secondary text-xl font-normal">Add to shelf</DialogTitle>
+              <div className="flex gap-3">
+                <Image
+                  src={book.image_url || "/placeholder.png"}
+                  alt={book.title}
+                  height={64}
+                  width={36}
+                  className="rounded-sm"
+                />
+                <div className="flex flex-col justify-center">
+                  <p className="text-sm font-medium text-secondary">{book.title}</p>
+                  <p className="text-xs text-muted font-light">{book.author}</p>
+                </div>
               </div>
-            </div>
-          </DialogHeader>
-          <RadioGroup className="w-full" name="shelf-radio-group" value={shelfValue} onValueChange={setShelfValue}>
-            <RadioItem icon={BookmarkIcon} label="Want to read" value="Want to read" id="r1"/>
-            <RadioItem icon={BookOpenIcon} label="Currently reading" value="Currently reading" id="r2"/>
-            <RadioItem icon={CheckIcon} label="Read" value="Read" id="r3"/>
-          </RadioGroup>
-          <DialogFooter className="bg-background">
-            <DialogClose render={<Button variant="outline" className="hover:bg-secondary-light/20 p-3">Cancel</Button>} />
-            <Button type="submit" className="bg-primary hover:bg-primary/90 p-3">Save</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            </DialogHeader>
+            <RadioGroup className="w-full" name="shelf-radio-group" value={shelfValue} onValueChange={setShelfValue}>
+              <RadioItem icon={BookmarkIcon} label="Want to read" value="Want to read" id="r1"/>
+              <RadioItem icon={BookOpenIcon} label="Currently reading" value="Currently reading" id="r2"/>
+              <RadioItem icon={CheckIcon} label="Read" value="Read" id="r3"/>
+            </RadioGroup>
+            <DialogFooter className="bg-background">
+              <DialogClose render={<Button variant="outline" className="hover:bg-secondary-light/20 p-3">Cancel</Button>} />
+              <Button type="submit" className="bg-primary hover:bg-primary/90 p-3">Save</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
